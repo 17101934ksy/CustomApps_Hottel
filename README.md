@@ -1,27 +1,150 @@
-Thanks for downloading this theme!
+# 오늘은 어디서 쉬지? 나만의 숙박 예약 서비스 HotTel
 
-## Other Useful Links
+<br />
 
-**ThemeWagon** is a great source for downloading free HTML templates built with the latest technology.
+> 🚀 Built with Flask
 
-To download free templates, follow this link: https://themewagon.com/theme_tag/free/
+- 👉 UX/UI 템플릿 소스 : https://themewagon.com/theme-categories/premium-templates/
+<br />
 
-Besides that, you can buy our premium templates for making your web development experience unforgettable.
+> Features
 
-Visit the store from here: https://themewagon.com/theme-categories/premium-templates/
+- `Up-to-date dependencies`
+- Database: `mysql`
+- `DB Tools`: SQLAlchemy ORM, Flask-Migrate (schema migrations)
+- Session-Based authentication (via **flask_login**), Forms validation
 
-Alternatively, here's our top most trending and selling items:
-
-* [**Sparrow**](https://themewagon.com/themes/sparrow/) - A multipurpose template made with Bootstrap 4.1 and world's finest animation.
-* [**Posh**](https://themewagon.com/themes/posh-html5-bootstrap-4-template/) - Bootstrap 4 template with a myriad number of ready-to-deploy sections. 
-* [**Elixir**](https://themewagon.com/themes/elixir-elegant-html5-bootstrap-template-consultancy-agency-website/) - Bootstrap 4 agency template. Best for smooth animated scrolling. 
-* [**Freya**](https://themewagon.com/themes/bootstrap-4-premium-interior-design-template-freya/) - Interior design template made with Bootstrap 4. 
-* [**Reign Pro**](https://themewagon.com/themes/reign-pro-premium-corporate-agency-html5-template/) - A corporate template with a visually unique design scheme. 
-* [**Boots4**](https://themewagon.com/themes/first-ever-bootstrap-4-template/) - One of the first Bootstrap 4 templates ever made on earth. 
-* [**Hideaway**](https://themewagon.com/themes/hideaway/) - A template for resorts. Built with Bootstrap 4. 
-* [**Baikal**](https://themewagon.com/themes/bootstrap-4-startup-small-business-website-template/) - A smart Bootstrap template for start-up. 
-* [**Mega Discount**](https://themewagon.com/themes/mega-discount-bundle/) - A bundle of 26 HTML5 templates; best value for your money. 
+<br />
 
 
-# CustomApps_Royal-Hotel
-# CustomApps_Hottel
+
+## ✨ 'linux' 셋 업
+
+> Download the code 
+
+```bash
+$ # Get the code
+$ git clone https://github.com/17101934ksy/CustomApps_Hottel.git
+$ cd hottel
+```
+
+<br />
+
+### 👉 `Unix`, `MacOS` 셋 업 
+
+> Install modules via `VENV`  
+
+```bash
+$ virtualenv env
+$ source env/bin/activate
+$ pip3 install -r requirements.txt
+```
+
+<br />
+
+> Set Up Flask Environment
+
+```bash
+$ export FLASK_APP=run.py
+$ export FLASK_ENV=development
+```
+
+<br />
+
+
+```bash
+$ flask run
+```
+
+<br />
+
+### 👉 `Windows` 셋 업
+
+> Install modules via `VENV` (windows) 
+
+```
+$ virtualenv env
+$ .\env\Scripts\activate
+$ pip3 install -r requirements.txt
+```
+
+<br />
+
+> Set Up Flask Environment
+
+```bash
+$ # CMD 
+$ set FLASK_APP=run.py
+$ set FLASK_ENV=development
+$
+$ # Powershell
+$ $env:FLASK_APP = ".\run.py"
+$ $env:FLASK_ENV = "development"
+```
+
+<br />
+
+> Start the app
+
+```bash
+$ flask run
+```
+
+<br />
+
+### 👉 서비스 소개
+
+
+
+<br />
+
+## ✨ 시스템 구조도
+
+The project is coded using blueprints, app factory pattern, dual configuration profile (development and production) and an intuitive structure presented bellow:
+
+```bash
+< PROJECT ROOT >
+   |
+   |-- apps/
+   |    |
+   |    |-- home/                           # HTML을 다루기 위한 home
+   |    |    |-- routes.py                  # app의 라우트
+   |    |
+   |    |-- authentication/                 # 로그인 사용자 등록 및 인증
+   |    |    |-- routes.py                  # 인증 처리 라우트 
+   |    |    |-- models.py                  # 인증 데이터 베이스  
+   |    |    |-- forms.py                   # 폼 구성 
+   |    |
+   |    |-- static/
+   |    |    |-- <css, JS, images>          # static 파일
+   |    |
+   |    |-- templates/                      # HTML 페이지 
+   |    |    |-- includes/                  # HTML jinja2 템플릿 구성요소
+   |    |    |    |-- scripts.html          # Scripts
+   |    |    
+   |    |    |-- layouts/                   # Base 파일
+   |    |        
+   |    |    |-- accounts/                  # 로그인 관련 폴더
+   |    |    |    |-- login.html            # 로그인
+   |    |    |    |-- register.html         # 등록
+   |    |    |
+   |    |    |-- home/                      # UI 폴더
+   |    |         |-- index.html            # Index
+   |    |         |-- 404-page.html         # 404 page
+   |    |         |-- *.html                # 모든 HTML 파
+   |    |    
+   |  config.py                             # Config
+   |    __init__.py                         # Initialize the app
+   |
+   |-- requirements.txt                     # App Dependencies
+   |
+   |-- .env                                 # Inject Configuration via Environment
+   |-- app.py                               # Start the app - WSGI gateway
+   |
+   |-- ************************************************************************
+```
+
+<br />
+
+
+---
