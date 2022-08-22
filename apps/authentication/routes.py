@@ -1,122 +1,105 @@
-import json, re
-from flask import render_template, request, jsonify, g,redirect, url_for
+from flask import render_template, request, redirect, url_for, flash, session
 
-# from flask_login import (
-#     current_user,
-#     login_user,
-#     logout_user
-# )
+from flask_login import (
+    current_user,
+    login_user,
+    logout_user
+)
 
+from apps import db, login_manager
 from apps.authentication import blueprint
-# from apps.authentication import mysqls
-# from apps.authentication.mysqls import db_connector, db_connectors, db_asos_connector, db_station_connectors, db_stack_connectors, db_email_check
-# from apps.authentication.chart_routes import imsang_chart, map_chart, stack_chart, weather_chart
-# from apps.authentication.tyform_routes import email_routes
-
-# from apps import db, login_manager
-# from apps.authentication.forms import LoginForm, CreateAccountForm
-# from apps.authentication.models import Users
-# from apps.authentication.util import verify_pass
-
-
+from apps.authentication.forms import SiteLoginForm, CreateAccountForm
+from apps.authentication.models import Users
+from apps.authentication.util import hash_pass, verify_pass
+import json
 
 @blueprint.route('/')
 def route_default():
-    # return redirect(url_for('authentication_blueprint.login'))
-    return render_template('home/index.html')
+    return redirect(url_for('authentication_blueprint.login'))
 
+@blueprint.route('/login', methods=['GET', 'POST'])
+def login():
+    login_form = SiteLoginForm()
+    error = None
 
-# @blueprint.route('/login', methods=['GET', 'POST'])
-# def login():
-#     login_form = LoginForm(request.form)
-#     if 'login' in request.form:
+    if request.method == 'POST':
+        data = request.get_json()
 
-#         # read form data
-#         username = request.form['username']
-#         password = request.form['password']
+        user = Users.query.filter_by(username=data['username']).first()
 
-#         # Locate user
-#         user = Users.query.filter_by(username=username).first()
-
-#         # Check the password
-#         if user and verify_pass(password, user.password):
-
-#             login_user(user)
-#             return redirect(url_for('authentication_blueprint.route_default'))
-            
-#         # Something (user or pass) is not ok
-#         return render_template('accounts/login.html',
-#                                msg='Wrong user or password',
-#                                form=login_form)
-
-#     if not current_user.is_authenticated:
-#         return render_template('accounts/login.html',
-#                                form=login_form)
-#     return redirect(url_for('home_blueprint.index'))
+        if not user:
+            error = "입력하신 정보가 올바르지 않습니다."
+            print(error)
+            print("***********************************************************************user2 test clear*******")
     
-# @blueprint.route('/register', methods=['GET', 'POST'])
-# def register():
-#     create_account_form = CreateAccountForm(request.form)
-#     if 'register' in request.form:
+        elif not verify_pass(data['password'], user.password):
+            error = '입력하신 정보가 올바르지 않습니다.'
+            print(error)
+            print("***********************************************************************user3 test clear*******")
 
-#         username = request.form['username']
-#         email = request.form['email']
+        if error is None:
+            print("***********************************************************************user4 test clear*******")
+            session.clear()
+            session['user_id']=user.id
+            print("***********************************************************************user4 test clear2*******")
+            return redirect(url_for('home_blueprint.index'))
 
-#         # Check usename exists
-#         user = Users.query.filter_by(username=username).first()
-#         if user:
-#             return render_template('accounts/register.html',
-#                                    msg='Username already registered',
-#                                    success=False,
-#                                    form=create_account_form)
+        flash(error)
+        print("***********************************************************************user6 test clear*******")
+    return render_template('accounts/login.html', form=login_form)
 
-#         # Check email exists
-#         user = Users.query.filter_by(email=email).first()
-#         if user:
-#             return render_template('accounts/register.html',
-#                                    msg='Email already registered',
-#                                    success=False,
-#                                    form=create_account_form)
+@blueprint.route('/register', methods=['GET', 'POST'])
+def register():
+    create_account_form = CreateAccountForm()
 
-#         # else we can create the user
-#         user = Users(**request.form)
-#         db.session.add(user)
-#         db.session.commit()
+    if request.method == 'POST':
+        data = request.get_json()
 
-#         # Delete user from session
-#         logout_user()
+        # Check usename exists
+        user = Users.query.filter_by(username=data['username']).first()
+        if user:
+            return render_template('accounts/login.html',
+                                   form=create_account_form)
 
-#         return render_template('accounts/register.html',
-#                                msg='User created successfully.',
-#                                success=True,
-#                                form=create_account_form)
+        # Check email exists
+        user = Users.query.filter_by(email=data['email']).first()
+        if user:
+            return render_template('accounts/login.html',
+                                   form=create_account_form)
 
-#     else:
-#         return render_template('accounts/register.html', form=create_account_form)
+        # else we can create the user
+        user = Users(username=data['username'], password=data['password'], 
+        email=data['email'], phonenum=data['phonenum'])
+        db.session.add(user)
+        db.session.commit()
 
+        # Delete user from session
+        logout_user()
 
-# @blueprint.route('/logout')
-# def logout():
-#     logout_user()
-#     return redirect(url_for('authentication_blueprint.login')) 
+        return render_template('accounts/login.html', form=create_account_form)
 
-# # Errors
-
-# @login_manager.unauthorized_handler
-# def unauthorized_handler():
-#     return render_template('home/erros/page-403.html'), 403
+    else:
+        return render_template('accounts/login.html', form=create_account_form)
 
 
-# @blueprint.errorhandler(403)
-# def access_forbidden(error):
-#     return render_template('home/erros/page-403.html'), 403
+@blueprint.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('authentication_blueprint.login')) 
+
+# Errors
+
+@login_manager.unauthorized_handler
+@blueprint.errorhandler(403)
+def access_forbidden():
+    return render_template('home/errors/page-403.html')
 
 
-# @blueprint.errorhandler(404)
-# def not_found_error(error):
-#     return render_template('home/erros/page-404.html'), 404
+@blueprint.errorhandler(404)
+def not_found_error():
+    return render_template('home/errors/page-404.html')
 
 
-# @blueprint.errorhandler(500)
-# def internal_error(error):
-#     return render_template('home/erros/page-500.html'), 500
+@blueprint.errorhandler(500)
+def internal_error():
+    return render_template('home/errors/page-500.html')

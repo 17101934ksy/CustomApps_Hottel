@@ -7,7 +7,7 @@ class Config(object):
     SECRET_KEY = os.getenv('SECRET_KEY', 'S#perS3crEt_007')
 
 
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:1234@localhost:3306/test'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:1234@localhost:3306/hottel'
     SQLALCHEMY_TRACK_MODIFICATIONS = False 
 
     # Assets Management
@@ -28,7 +28,7 @@ class ProductionConfig(Config):
         os.getenv('DB_PASS'     , '1234'),
         os.getenv('DB_HOST'     , 'localhost'),
         os.getenv('DB_PORT'     , 3306),
-        os.getenv('DB_NAME'     , 'test')
+        os.getenv('DB_NAME'     , 'hottel')
     ) 
 
 class DebugConfig(Config):

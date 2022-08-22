@@ -1,56 +1,31 @@
-# from flask_wtf import FlaskForm
-# from wtforms import StringField, PasswordField, IntegerField, FloatField
-# from wtforms.validators import Email, DataRequired
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, IntegerField, FloatField
+from wtforms.validators import Email, DataRequired, Length, EqualTo
 
-# # login and registration
-
-
-# class LoginForm(FlaskForm):
-#     username = StringField('Username',
-#                          id='username_login',
-#                          validators=[DataRequired()])
-#     password = PasswordField('Password',
-#                              id='pwd_login',
-#                              validators=[DataRequired()])
+# login and registration
 
 
-# class CreateAccountForm(FlaskForm):
-#     username = StringField('Username',
-#                          id='username_create',
-#                          validators=[DataRequired()])
-#     email = StringField('Email',
-#                       id='email_create',
-#                       validators=[DataRequired(), Email()])
-#     password = PasswordField('Password',
-#                              id='pwd_create',
-#                              validators=[DataRequired()])
+class SiteLoginForm(FlaskForm):
+    username = StringField('아이디',
+                         id='username_login',
+                         validators=[DataRequired()])
+    password = PasswordField('비밀번호 (4 ~ 20자 사이)',
+                             id='pwd_login',
+                             validators=[DataRequired(), Length(min=4, max=20)])
 
 
-# class CreateTypeForm(FlaskForm):
-#     hectare = StringField('Hectare',
-#                          id='hectare_create',
-#                          validators=[DataRequired()])
-                         
-#     qaulity = StringField('Quality',
-#                       id='quality_create',
-#                       validators=[DataRequired()])
-
-#     departure = StringField('Departure',
-#                              id='departure_create',
-#                              validators=[DataRequired()])
-
-#     destination = StringField('Destination',
-#                              id='destination_create',
-#                              validators=[DataRequired()])
-
-#     fiveton =  IntegerField('FiveTon',
-#                             id='fiveton_create',
-#                             validate=[DataRequired()])
-
-#     twentyfiveton = IntegerField('TwentyFiveTon',
-#                                 id='fiveton_create',
-#                                 validate=[DataRequired()])
-
-#     email = StringField('Email',
-#                       id='email_create',
-#                       validators=[DataRequired(), Email()])         
+class CreateAccountForm(FlaskForm):
+    username = StringField('아이디',
+                         id='username_login',
+                         validators=[DataRequired()])
+    password = PasswordField('비밀번호 (4 ~ 20자 사이)',
+                             id='pwd_login',
+                             validators=[DataRequired(), Length(min=4, max=20)])
+    confirm_password = PasswordField("비밀번호 확인", 
+                            validators=[DataRequired(), EqualTo("password")] )
+    email =  StringField("이메일", 
+                        id='email',
+                        validators=[DataRequired(), Email()])
+    phonenum = IntegerField('전화번호',
+                            id='phone_num',
+                            validators=[DataRequired()])

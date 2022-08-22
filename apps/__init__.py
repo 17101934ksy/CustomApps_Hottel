@@ -1,18 +1,27 @@
 from flask import Flask
-# from flask_login import LoginManager
+from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from importlib import import_module
-# import pymysql
+from sqlalchemy import MetaData
+import pymysql
 
 from sqlalchemy import create_engine, text
 
-db = SQLAlchemy()
-# login_manager = LoginManager()
+naming_convetion = {
+    'ix' : "ix_%(column_0_label)s",
+    'uq' : "uq_%(table_name)s_%(column_0_name)s",
+    "ck" : "ck_%(table_name)s_%(column_0_name)s",
+    "fk" : "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk" : "pk_%(table_name)s"
+}
+
+db = SQLAlchemy(metadata=MetaData(naming_convention=naming_convetion))
+login_manager = LoginManager()
 
 
 def register_extensions(app):
     db.init_app(app)
-    # login_manager.init_app(app)
+    login_manager.init_app(app)
 
 
 def register_blueprints(app):

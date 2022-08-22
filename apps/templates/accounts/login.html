@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="icon" href="image/favicon.png" type="image/png">
+        <title>Royal Hotel</title>
+        <!-- Bootstrap CSS -->
+
+        <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/css/bootstrap.css">
+        <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/vendors/linericon/style.css">
+        <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/css/font-awesome.min.css">
+        <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/vendors/owl-carousel/owl.carousel.min.css">
+        <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/vendors/bootstrap-datepicker/bootstrap-datetimepicker.min.css">
+        <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/vendors/nice-select/css/nice-select.css">
+        <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/vendors/owl-carousel/owl.carousel.min.css">
+        <!-- main css -->
+        <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/css/style.css">
+        <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/css/responsive.css">
+
+        <style>
+            .modal-notify .modal-header {
+                border-radius: 3px 3px 0 0;
+            }
+            .modal-notify .modal-content {
+                border-radius: 3px;
+            }
+        </style>
+
+    </head>
+    <body>
+        <!--================Header Area =================-->
+
+        <!--================Header Area =================-->
+        
+        <!--================Banner Area =================-->
+        <section class="banner_area">
+            <div class="booking_table d_flex align-items-center">
+            	<div class="overlay bg-parallax" data-stellar-ratio="0.9" data-stellar-vertical-offset="0" data-background=""></div>
+				<div class="container">
+					<div class="banner_content text-center">
+						<h6>Away from monotonous life</h6>
+						<h2>오늘의 숙박 HoTtel</h2>
+						<p>당신의 편안한 휴식을 위한 최고의 숙박 시설 예약 서비스<br> 지금 당장 만나보세요</p>
+						<a href="#" class="btn theme_btn button_hover" data-toggle="modal" data-target="#orangeModal_login">로그인</a>
+                        <a href="#" class="btn theme_btn button_hover" data-toggle="modal" data-target="#orangeModal_social_login">소셜로그인</a>
+                        <a href="#" class="btn theme_btn button_hover" data-toggle="modal" data-target="#orangeModal_register">회원가입</a>
+                        <a href="#" class="btn theme_btn button_hover" data-toggle="modal" data-target="#orangeModal_search_member">회원찾기</a>
+					</div>
+				</div>
+            </div>
+            </div> -->
+        </section>
+
+        <!--================Modal Area =================-->
+        <!-- Login -->
+        <div class="modal fade" id="orangeModal_login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-notify modal-warning" role="document">
+            <div class="modal-content">
+            <div class="modal-header text-center">
+                <h4 class="modal-title white-text w-100 font-weight-bold py-2">로그인</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true" class="white-text">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" class="post-form">
+                    {{ form.csrf_token }}
+                    <div class="form-group">
+                        <label for="username">아이디</label>
+                        <input type="text" class="form-control" name="username" id="login_username">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">비밀번호</label>
+                        <input type="password" class="form-control" name="password" id="login_password">
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="submit" class="btn btn-outline-warning waves-effect" id="login_button"> 로그인 </button>
+                    </div>
+                </form>
+            </div>
+            </div>
+        </div>
+        </div>
+        <!-- social login -->
+        <div class="modal fade" id="orangeModal_social_login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-notify modal-warning" role="document">
+                <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title white-text w-100 font-weight-bold py-2">소셜 로그인 (수정 중)</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="white-text">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" class="post-form">
+                        {{ form.csrf_token }}
+                        <div class="form-group">
+                            <label for="username">아이디</label>
+                            <input type="text" class="form-control" name="username" id="social_username">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">비밀번호</label>
+                            <input type="password" class="form-control" name="password" id="social_password">
+                        </div>
+                        <div class="modal-footer justify-content-center">
+                            <button type="submit" class="btn btn-outline-warning waves-effect" id="social_login_button"> 소셜 로그인 </button>
+                        </div>
+                    </form>
+                </div>
+
+                </div>
+            </div>
+            </div>
+
+        <!-- orangeModalregister -->
+        <div class="modal fade" id="orangeModal_register" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-notify modal-warning" role="document">
+                <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title white-text w-100 font-weight-bold py-2">회원가입</a></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="white-text">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" class="post-form" >
+                        {{ form.csrf_token }}
+                        <div class="form-group">
+                            <label for="username">아이디</label>
+                            <input type="text" class="form-control" name="username" id="register_username">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">비밀번호</label>
+                            <input type="password" class="form-control" name="password" id="register_password">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm_password">비밀번호 확인</label>
+                            <input type="password" class="form-control" name="confirm_password" id="register_confirm_password">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">이메일</label>
+                            <input type="text" class="form-control" name="email" id="register_email">
+                        </div>
+                        <div class="form-group">
+                            <label for="phonenum">전화번호</label>
+                            <input type="text" class="form-control" name="phonenum" id="register_phonenum">
+                        </div>
+                        <div class="modal-footer justify-content-center">
+                            <button type="submit" class="btn btn-outline-warning waves-effect" id="register_button"> 가입하기 </button>
+                        </div>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- orangeModalsearchmember -->
+        <div class="modal fade" id="orangeModal_search_member" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-notify modal-warning" role="document">
+                <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title white-text w-100 font-weight-bold py-2">회원찾기 (수정 중)</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="white-text">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" class="post-form">
+                        {{ form.csrf_token }}
+                        <div class="form-group">
+                            <label for="username">아이디</label>
+                            <input type="text" class="form-control" name="username" id="search_username">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">이메일</label>
+                            <input type="password" class="form-control" name="password" id="search_password">
+                        </div>
+                        <div class="modal-footer justify-content-center">
+                            <button type="submit" class="btn btn-outline-warning waves-effect" id="search_button"> 인증번호 받기 </button>
+                        </div>
+                    </form>
+                </div>
+                </div>
+            </div>
+            </div>
+
+		<!--================ End Modal Area  =================-->
+        
+        
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="{{ config.ASSETS_ROOT }}/js/jquery-3.2.1.min.js"></script>
+        <script src="{{ config.ASSETS_ROOT }}/js/popper.js"></script>
+        <script src="{{ config.ASSETS_ROOT }}/js/bootstrap.min.js"></script>
+        <script src="{{ config.ASSETS_ROOT }}/vendors/owl-carousel/owl.carousel.min.js"></script>
+        <script src="{{ config.ASSETS_ROOT }}/js/jquery.ajaxchimp.min.js"></script>
+        <script src="{{ config.ASSETS_ROOT }}/js/mail-script.js"></script>
+        <script src="{{ config.ASSETS_ROOT }}/vendors/bootstrap-datepicker/bootstrap-datetimepicker.min.js"></script>
+        <script src="{{ config.ASSETS_ROOT }}/vendors/nice-select/js/jquery.nice-select.js"></script>
+        <script src="{{ config.ASSETS_ROOT }}/js/mail-script.js"></script>
+        <script src="{{ config.ASSETS_ROOT }}/js/stellar.js"></script>
+        <script src="{{ config.ASSETS_ROOT }}/vendors/lightbox/simpleLightbox.min.js"></script>
+        <script src="{{ config.ASSETS_ROOT }}/js/custom.js"></script>
+        <script>
+            $(document).ready(function(){  
+                
+                $('#login_button').click(function(){  
+                    var username = $('#login_username').val();  
+                    var password = $('#login_password').val();  
+
+                    if(username != '' && password != ''){  
+                        dataJson = {
+                            "username": username,
+                            "password": password
+                        }
+
+                        $.ajax({
+                            type: 'POST',
+                            url: 'login',
+                            async: true,
+                            dataType: 'json',
+                            contentType: 'application/json',
+                            data: JSON.stringify(dataJson),
+                            success: function(response) {
+                                console.log('login success');
+                            }
+                        })
+                    }
+                    else
+                    {  
+                        alert("Both Fields are required");  
+                    }  
+                }); 
+
+                $('#register_button').click(function(){  
+                    var username = $('#register_username').val();  
+                    var password = $('#register_password').val();  
+                    var confirm_password = $('#register_confirm_password').val();
+                    var email = $('#register_email').val();
+                    var phonenum = $('#register_phonenum').val();
+
+                    if(username != '' && password != '' && password == confirm_password && email != '' && phonenum != ''){ 
+                        dataJson = {
+                            "username": username,
+                            "password": password,
+                            "email": email,
+                            "phonenum": phonenum
+                        } 
+                        $.ajax({
+                            type: 'POST',
+                            url: 'register',
+                            async: true,
+                            dataType: 'json',
+                            contentType: 'application/json',
+                            data: JSON.stringify(dataJson),
+                            success: function(response) {
+                                console.log('register success')
+                            }
+                        })
+                    }
+                    else {  
+                        alert("Both Fields are required");  
+                    }  
+                }); 
+            });  
+        </script>
+    </body>
+</html>
