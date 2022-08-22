@@ -5,10 +5,10 @@ from jinja2 import TemplateNotFound
 
 
 
-@login_required
+
 @blueprint.route('/index')
 def index():
-    return render_template('home/index.html')
+    return render_template('home/index.html', segment='index')
 
 
 @blueprint.route('/<template>')

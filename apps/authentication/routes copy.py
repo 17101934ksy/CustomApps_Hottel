@@ -20,15 +20,32 @@ def route_default():
 @blueprint.route('/login', methods=['GET', 'POST'])
 def login():
     login_form = SiteLoginForm()
+    error = None
 
-    # if request.method == 'POST':
-    #     data = request.get_json()
-    #     print(data)
+    if request.method == 'POST':
+        data = request.get_json()
 
-    #     if data["result"] == "success":
-    #         print('success')
-    #         return jsonify({"result": "success"})
+        user = Users.query.filter_by(username=data['username']).first()
 
+        if not user:
+            error = "입력하신 정보가 올바르지 않습니다."
+            print(error)
+            print("***********************************************************************user2 test clear*******")
+    
+        elif not verify_pass(data['password'], user.password):
+            error = '입력하신 정보가 올바르지 않습니다.'
+            print(error)
+            print("***********************************************************************user3 test clear*******")
+
+        if error is None:
+            print("***********************************************************************user4 test clear*******")
+            session.clear()
+            session['user_id']=user.id
+            print("***********************************************************************user4 test clear*******")
+            return redirect(url_for('home_blueprint.index'))
+
+        flash(error)
+        print("***********************************************************************user6 test clear*******")
     return render_template('accounts/login.html', form=login_form)
 
 @blueprint.route('/check_login', methods=['GET', 'POST'])
@@ -49,9 +66,11 @@ def check_login():
         if error is None:
             session.clear()
             session['user_id']=user.id
-            print('success')
+            print("***********************************************************************user4 test clear*******")
             return jsonify({"result":"success"})
 
+        flash(error)
+        print("***********************************************************************user6 test clear*******")
     return jsonify({"result":"fail"})
 
 

@@ -211,20 +211,39 @@
                     var password = $('#login_password').val();  
 
                     if(username != '' && password != ''){  
-                        dataJson = {
+                        var dataJson = {
                             "username": username,
                             "password": password
                         }
 
                         $.ajax({
                             type: 'POST',
-                            url: 'login',
-                            async: true,
+                            url: 'check_login',
+                            async: false,
                             dataType: 'json',
                             contentType: 'application/json',
                             data: JSON.stringify(dataJson),
                             success: function(response) {
                                 console.log('login success');
+                                if (response["result"] == "success"){
+                                $.ajax({
+                                    type:'POST',
+                                    url: 'login',
+                                    async: true,
+                                    datatype: 'html',
+                                    contentType: "application/json; charset=utf-8",
+                                    data: JSON.stringify({"result":"success"}),
+                                    success: function(response){
+                                        console.log('index');
+                                        let url = 'index';
+                                        location.replace(url);
+                                        }
+                                    }
+                                )
+                                }
+                                else{
+                                    console.log('login fail')    
+                                }
                             }
                         })
                     }
@@ -242,7 +261,7 @@
                     var phonenum = $('#register_phonenum').val();
 
                     if(username != '' && password != '' && password == confirm_password && email != '' && phonenum != ''){ 
-                        dataJson = {
+                        var dataJson = {
                             "username": username,
                             "password": password,
                             "email": email,
@@ -251,7 +270,7 @@
                         $.ajax({
                             type: 'POST',
                             url: 'register',
-                            async: true,
+                            async: false,
                             dataType: 'json',
                             contentType: 'application/json',
                             data: JSON.stringify(dataJson),
