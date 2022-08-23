@@ -1,11 +1,9 @@
 from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
+
 from importlib import import_module
 from sqlalchemy import MetaData
-import pymysql
-
-from sqlalchemy import create_engine, text
 
 naming_convetion = {
     'ix' : "ix_%(column_0_label)s",

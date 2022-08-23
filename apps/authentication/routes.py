@@ -29,7 +29,7 @@ def check_login():
     if request.method == 'POST':
         data = request.get_json()
 
-        user = Users.query.filter_by(user_name=data['username']).first()
+        user = Users.query.filter_by(userName=data['username']).first()
 
         if not user:
             error = "입력하신 정보가 올바르지 않습니다."
@@ -39,7 +39,7 @@ def check_login():
 
         if error is None:
             session.clear()
-            session['user_id']=user.user_id
+            session['user_id']=user.userId
             print('success')
             return jsonify({"result":"success"})
 
@@ -54,7 +54,7 @@ def register():
         data = request.get_json()
 
         # Check usename exists
-        user = Users.query.filter_by(user_name=data['username']).first()
+        user = Users.query.filter_by(userName=data['username']).first()
         if user:
             return render_template('accounts/login.html',
                                    form=create_account_form)
@@ -66,8 +66,8 @@ def register():
                                    form=create_account_form)
 
         # else we can create the user
-        user = Users(user_name=data['username'], password=data['password'], 
-        email=data['email'], phonenum=data['phonenum'])
+        user = Users(userNamee=data['username'], password=data['password'], 
+        email=data['email'], phoneNumber=data['phonenum'])
         db.session.add(user)
         db.session.commit()
 
