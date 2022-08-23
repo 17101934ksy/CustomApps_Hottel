@@ -29,23 +29,16 @@ def login():
 
         if not user:
             error = "입력하신 정보가 올바르지 않습니다."
-            print(error)
-            print("***********************************************************************user2 test clear*******")
-    
+
         elif not verify_pass(data['password'], user.password):
             error = '입력하신 정보가 올바르지 않습니다.'
-            print(error)
-            print("***********************************************************************user3 test clear*******")
 
         if error is None:
-            print("***********************************************************************user4 test clear*******")
             session.clear()
             session['user_id']=user.id
-            print("***********************************************************************user4 test clear*******")
             return redirect(url_for('home_blueprint.index'))
 
         flash(error)
-        print("***********************************************************************user6 test clear*******")
     return render_template('accounts/login.html', form=login_form)
 
 @blueprint.route('/check_login', methods=['GET', 'POST'])
@@ -66,11 +59,9 @@ def check_login():
         if error is None:
             session.clear()
             session['user_id']=user.id
-            print("***********************************************************************user4 test clear*******")
             return jsonify({"result":"success"})
 
         flash(error)
-        print("***********************************************************************user6 test clear*******")
     return jsonify({"result":"fail"})
 
 

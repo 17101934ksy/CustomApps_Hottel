@@ -39,3 +39,37 @@ def request_loader(request):
     username = request.form.get('username')
     user = Users.query.filter_by(username=username).first()
     return user if user else None
+
+class HotelItems(db.Model):
+    __tablename__ = 'HotelItems'
+
+    id = db.Column(db.Integer, primary_key=True)
+    hotelname = db.Column(db.String(200), nullable=False)
+    hoteltime = db.Column(db.DateTime, nullable=False)
+    hotelimage = db.Column(db.String(300))
+    hotelprice = db.Column(db.String(100))
+    hotelurl = db.Column(db.String(200), nullable=False)
+    
+    def __repr__(self):
+        return str(self.hotelname)
+
+class Cart(db.Model):
+    __tablename__ = 'Cart'
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64))
+    cartname = db.Column(db.String(200), nullable=False)
+    cartprice = db.Column(db.String(100))
+    carturl = db.Column(db.String(200), nullable=False)
+
+    def __repr__(self):
+        return str(self.cartname)
+
+class Reservation(db.Model):
+    __tablename__ = 'Reservation'
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64))
+    reservtime = db.Column(db.String(100), nullable=False)
+    hotelname = db.Column(db.String(200), nullable=False)
+    hoteltime = db.Column(db.DateTime, nullable=False)

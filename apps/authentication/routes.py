@@ -20,15 +20,6 @@ def route_default():
 @blueprint.route('/login', methods=['GET', 'POST'])
 def login():
     login_form = SiteLoginForm()
-
-    # if request.method == 'POST':
-    #     data = request.get_json()
-    #     print(data)
-
-    #     if data["result"] == "success":
-    #         print('success')
-    #         return jsonify({"result": "success"})
-
     return render_template('accounts/login.html', form=login_form)
 
 @blueprint.route('/check_login', methods=['GET', 'POST'])
