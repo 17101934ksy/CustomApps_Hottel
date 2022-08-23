@@ -6,8 +6,8 @@ from wtforms.validators import Email, DataRequired, Length, EqualTo
 
 
 class SiteLoginForm(FlaskForm):
-    username = StringField('아이디',
-                         id='username_login',
+    user_name = StringField('아이디',
+                         id='user_name_login',
                          validators=[DataRequired()])
     password = PasswordField('비밀번호 (4 ~ 20자 사이)',
                              id='pwd_login',
@@ -15,8 +15,8 @@ class SiteLoginForm(FlaskForm):
 
 
 class CreateAccountForm(FlaskForm):
-    username = StringField('아이디',
-                         id='username_login',
+    user_name = StringField('아이디',
+                         id='user_name_login',
                          validators=[DataRequired()])
     password = PasswordField('비밀번호 (4 ~ 20자 사이)',
                              id='pwd_login',
@@ -26,6 +26,6 @@ class CreateAccountForm(FlaskForm):
     email =  StringField("이메일", 
                         id='email',
                         validators=[DataRequired(), Email()])
-    phonenum = IntegerField('전화번호',
+    phone_num = IntegerField('전화번호',
                             id='phone_num',
                             validators=[DataRequired()])
