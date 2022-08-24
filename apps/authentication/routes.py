@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, flash, session, jsonify
+from flask import render_template, request, redirect, url_for, session, jsonify
 
 from flask_login import (
     current_user,
@@ -9,9 +9,13 @@ from flask_login import (
 from apps import db, login_manager
 from apps.authentication import blueprint
 from apps.authentication.forms import SiteLoginForm, CreateAccountForm
-from apps.authentication.models import Users, Accomodations
+from apps.authentication.models import Users, BusinessRegisters, BusinessLists, Accomodations
 from apps.authentication.util import verify_pass, crawler_db
-import json
+
+import os, hashlib, binascii, requests, re, time, random
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+
 
 @blueprint.route('/')
 def route_default():
@@ -105,23 +109,53 @@ def not_found_error():
 def internal_error():
     return render_template('home/errors/page-500.html')
 
+# Simulation
 
-@blueprint.route('/update_simulation_database', methods=['GET', 'POST'])
-def update_simulation_database():
+@blueprint.route('/simulation_database', methods=['GET', 'POST'])
+def simulation_database():
 
     if str(session['user_id']) == '1':  
         data = crawler_db('Accomodations')
+        lst_num = int(Users.query.order_by(Users.userId.desc()).first().userId)
 
-        for idx in data['Accomodations']:
-            item = data['Accomodations'][idx]
 
+        for item in data['Accomodations']:
             accomodation = Accomodations.query.filter_by(accomodationId=item['accomodationId']).first()
-            if accomodation:
+            if accomodation is not None:
                 continue
+            
+            lst_num += 1
+            # databases 생성
+            user = Users(userName=f'user{lst_num}', password='1234', \
+                email=f'user{lst_num}@test.com', phoneNumber='01011111111')
+            db.session.add(user)
+            db.session.commit()
+
+            business_register = BusinessRegisters(userId=user.userId, businessNumber=f'1010-{str(user.userId)}')
+            db.session.add(business_register)
+            db.session.commit()
+
+            business_list = BusinessLists(businessId=item['accomodationId'], businessAddr=f'seoul-{item["accomodationName"]}', userId=user.userId)    
+            db.session.add(business_list)
+            db.session.commit()
 
             accomodation = Accomodations(accomodationId=item['accomodationId'], accomodationType=item['accomodationType'],\
                 accomodationName=item['accomodationName'], accomodationImage=item['accomodationImage'])
+
             db.session.add(accomodation)
             db.session.commit()
 
-    return None
+        return str("session clear")
+    return str("session fail")
+
+
+@blueprint.route('/test_test', methods=['GET', 'POST'])
+def test_test():
+    url = urlopen("https://www.yanolja.com/hotel")
+    btfs = BeautifulSoup(url, "html.parser")
+
+    data = []
+    for a in btfs.find_all('a', {'class': 'ListItem_container__1z7jK SubhomeList_item__1IR4d'}):
+        data.append(a)
+    
+    return str(data)

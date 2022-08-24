@@ -1,4 +1,4 @@
-import os, hashlib, binascii, requests, re, json
+import os, hashlib, binascii, requests, re, time, random
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
@@ -40,24 +40,35 @@ def crawler_db(dbname):
         btfs = BeautifulSoup(url, "html.parser")
 
         accomodations_json = {"Accomodations":[]}
-        accomodations_id = []
-        accomodations_image = []
-        accomodations_name = []
-        accomodations_type = []
+        accomodations_id, accomodations_image, accomodations_name, accomodations_type = [], [], [], []
 
-        for a in btfs.find_all('a', {'class': 'ListItem_container__1z7jK SubhomeList_item__1IR4d'}):
+        for idx, a in enumerate(btfs.find_all('a', {'class': 'ListItem_container__1z7jK SubhomeList_item__1IR4d'})):
+            
+            if idx % 10 == 0:
+                time.sleep(random.randint(7, 10))
             id = re.sub(r'[^0-9]', '', a.get('href'))
-            acctype = re.sub(r'^[a-zA-Z]', '', a.get('href'))
+            acctype = re.sub(r'[^a-zA-Z]', '', a.get('href'))
             accomodations_type.append(acctype)
             accomodations_id.append(id)
 
-        for div in btfs.find_all('div', {'class': 'ListItem_image__nEbnK'}):
+            print(idx)
+
+        for idx, div in enumerate(btfs.find_all('div', {'class': 'ListItem_image__nEbnK'})):
+            if idx % 10 == 0:
+                time.sleep(random.randint(7, 10))
             image_text = div.get('style')
             image = image_text[21:-1] if image_text[:20] == "background-image:url" else ""
             accomodations_image.append(image)
 
-        for div in btfs.find_all('div', {'class': 'ListItem_title__1-j89'}):
+            print(idx)
+
+        for idx, div in enumerate(btfs.find_all('div', {'class': 'ListItem_title__1-j89'})):
+            if idx % 10 == 0:
+                time.sleep(random.randint(7, 10))
+
             accomodations_name.append(div.text)
+
+            print(idx)
 
         if len(accomodations_id) == len(accomodations_type) == len(accomodations_image) == len(accomodations_name):
             for id, acctype, image, name in zip(accomodations_id, accomodations_type, accomodations_image, accomodations_name):
@@ -76,7 +87,4 @@ def crawler_db(dbname):
         "Rooms": yanolja_rooms()
     }
 
-    func = action[dbname]
-
-    return func
-    
+    return action[dbname]

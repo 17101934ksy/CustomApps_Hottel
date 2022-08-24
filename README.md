@@ -1,6 +1,11 @@
-# 오늘은 어디서 쉬지? 나만의 숙박 예약 서비스 HotTel
+# 오늘은 어디서 쉬지? 나만의 숙박 예약 서비스 핫텔!
 
 <br />
+
+- 👉 서비스 소개
+
+<img src="https://user-images.githubusercontent.com/88478829/186391655-470d1ac5-a34a-4dfa-b7ae-0d5754631c91.png" width="width 50%" height="height 50%"> </image>
+
 
 > 🚀 Built with Flask
 
@@ -161,4 +166,5 @@ $ flask run
 
 
 ---
+
 
