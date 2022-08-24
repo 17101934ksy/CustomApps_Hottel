@@ -18,7 +18,7 @@
 
 
 
-## ✨ 'linux' 셋 업
+## ✨ 깃 소스 
 
 > Download the code 
 
@@ -30,7 +30,7 @@ $ cd hottel
 
 <br />
 
-### 👉 `Unix`, `MacOS` 셋 업 
+#### `LINUX`, `Unix`, `MacOS` 셋 업 
 
 > Install modules via `VENV`  
 
@@ -58,7 +58,7 @@ $ flask run
 
 <br />
 
-### 👉 `Windows` 셋 업
+#### `Windows` 셋 업
 
 > Install modules via `VENV` (windows) 
 
@@ -92,7 +92,7 @@ $ flask run
 
 <br />
 
-### 👉 서비스 소개
+## ✨ 시스템 소개
 
 
 
@@ -100,7 +100,20 @@ $ flask run
 
 ## ✨ 시스템 구조도
 
-The project is coded using blueprints, app factory pattern, dual configuration profile (development and production) and an intuitive structure presented bellow:
+### 👉 `ERD` 설계 
+
+`Users`: 유저(이용객, 사업자)<br />
+`BusinessRegisters`: 사업자 등록(일반 이용객에서 사업자 권한 획득)<br />
+`BusinessLists`: 사업자 영업 리스트(주소가 다른 숙박 시설을 운영할 수 있기 때문에 사업자와 숙박시설의 일 대 다 성립)<br />
+=> 보완 사항: 공동 사업자일 경우가 있음<br />
+`Accomodations`: 숙박 시설<br />
+`Rooms`: 숙박시설의 다양한 방<br />
+`Carts`: 이용객의 장바구니<br />
+`Reservations`: 예약 상황<br />
+
+<img src = "https://user-images.githubusercontent.com/88478829/186169072-e3fb93f0-7d6e-4fe7-8096-e86ee0602267.png" width="width 50%" height="height 50%">
+
+### 👉 `package` 설계 
 
 ```bash
 < PROJECT ROOT >
@@ -148,3 +161,4 @@ The project is coded using blueprints, app factory pattern, dual configuration p
 
 
 ---
+

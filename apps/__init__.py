@@ -26,6 +26,7 @@ def register_blueprints(app):
     for module_name in ('authentication', 'home'):
         module = import_module('apps.{}.routes'.format(module_name))
         app.register_blueprint(module.blueprint)
+    # app.register_blueprint(import_module('apps.authentication.routes_manager').blueprint)
 
 def configure_database(app):
 

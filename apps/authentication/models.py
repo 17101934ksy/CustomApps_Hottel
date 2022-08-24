@@ -1,7 +1,7 @@
 from flask_login import UserMixin
 from apps import db, login_manager
 from apps.authentication.util import hash_pass
-from sqlalchemy import Column, Integer, String, LargeBinary, DateTime, ForeignKey, ForeignKeyConstraint, Index
+from sqlalchemy import Column, Integer, String, LargeBinary, DateTime, ForeignKey, Float
 
 class Users(db.Model, UserMixin):
 
@@ -54,7 +54,7 @@ class Accomodations(db.Model):
     accomodationId = Column(Integer, ForeignKey('BusinessLists.businessId'), primary_key=True)
     accomodationType = Column(String(100), nullable=False)
     accomodationName = Column(String(100), nullable=False)
-    accomodationUrl = Column(String(100), nullable=False)
+    accomodationImage = Column(String(300))
 
     businessLists = db.relationship('BusinessLists', backref='Accomodations')
 
@@ -69,9 +69,12 @@ class Rooms(db.Model):
     roomName = Column(String(200), nullable=False)
     romeCheckIn = Column(DateTime, nullable=False)
     romeCheckOut = Column(DateTime, nullable=False)
+    roomStandardPopulation =Column(Integer)
+    roomUptoPopulation =Column(Integer)
     romeImage = Column(String(300))
-    romePrice = Column(String(100))
-    romeUrl = Column(String(200), nullable=False)
+    roomSalePrice = Column(String(100), nullable=True)
+    romeOriginalPrice = Column(String(100))
+    roomRate = Column(Float, nullable=True)
     accomodationId = Column(Integer, ForeignKey('Accomodations.accomodationId'))
 
     accomodations = db.relationship('Accomodations', backref='Rooms')

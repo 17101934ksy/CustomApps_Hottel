@@ -9,8 +9,8 @@ from flask_login import (
 from apps import db, login_manager
 from apps.authentication import blueprint
 from apps.authentication.forms import SiteLoginForm, CreateAccountForm
-from apps.authentication.models import Users
-from apps.authentication.util import hash_pass, verify_pass
+from apps.authentication.models import Users, Accomodations
+from apps.authentication.util import verify_pass, crawler_db
 import json
 
 @blueprint.route('/')
@@ -66,13 +66,15 @@ def register():
                                    form=create_account_form)
 
         # else we can create the user
-        user = Users(userNamee=data['username'], password=data['password'], 
+        user = Users(userName=data['username'], password=data['password'], 
         email=data['email'], phoneNumber=data['phonenum'])
         db.session.add(user)
         db.session.commit()
 
         # Delete user from session
         logout_user()
+
+        print('session clear!')
 
         return render_template('accounts/login.html', form=create_account_form)
 
@@ -102,3 +104,24 @@ def not_found_error():
 @blueprint.errorhandler(500)
 def internal_error():
     return render_template('home/errors/page-500.html')
+
+
+@blueprint.route('/update_simulation_database', methods=['GET', 'POST'])
+def update_simulation_database():
+
+    if str(session['user_id']) == '1':  
+        data = crawler_db('Accomodations')
+
+        for idx in data['Accomodations']:
+            item = data['Accomodations'][idx]
+
+            accomodation = Accomodations.query.filter_by(accomodationId=item['accomodationId']).first()
+            if accomodation:
+                continue
+
+            accomodation = Accomodations(accomodationId=item['accomodationId'], accomodationType=item['accomodationType'],\
+                accomodationName=item['accomodationName'], accomodationImage=item['accomodationImage'])
+            db.session.add(accomodation)
+            db.session.commit()
+
+    return None
