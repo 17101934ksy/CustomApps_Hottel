@@ -11,8 +11,8 @@
 역할|이름|학번|Git|개발|
 ---|---|---|---|---|
 기획|우명균|19102006|[---](---)|서비스 기획
-개발|고세윤|17101934|[17101934ksy](https://github.com/17101934ksy)|데이터베이스, 백엔드
-개발|김소연|21101039|[---](---)|프론트
+팀장|고세윤|17101934|[17101934ksy](https://github.com/17101934ksy)|백엔드, 프론트
+개발|김소연|21101039|[thdus](https://github.com/thdus)|프론트
 개발|황지연|21101989|[ghkdwldus0807](https://github.com/ghkdwldus0807)|프론트
 <br/>
 > 🚀 Built with Flask
@@ -133,31 +133,38 @@ $ flask run
    |
    |-- apps/
    |    |
-   |    |-- home/                           # HTML을 다루기 위한 home
-   |    |    |-- routes.py                  # app의 라우트
+   |    |-- home/                           # home
+   |    |    |-- routes.py                  # routes for app(render templates, fetch data etc...)
    |    |
-   |    |-- authentication/                 # 로그인 사용자 등록 및 인증
-   |    |    |-- routes.py                  # 인증 처리 라우트 
-   |    |    |-- models.py                  # 인증 데이터 베이스  
-   |    |    |-- forms.py                   # 폼 구성 
+   |    |-- authentication/                 # authenticate for login
+   |    |    |-- routes.py                  # routes for authentication 
+   |    |    |-- models.py                  # database
+   |    |    |-- forms.py                   # form
+   |    |    |-- fetch.py                   # fetch from database
+   |    |    |-- util.py                    # function for utils 
    |    |
    |    |-- static/
-   |    |    |-- <css, JS, images>          # static 파일
+   |    |    |-- <css, JS, images>          # static
    |    |
-   |    |-- templates/                      # HTML 페이지 
-   |    |    |-- includes/                  # HTML jinja2 템플릿 구성요소
-   |    |    |    |-- scripts.html          # Scripts
+   |    |-- templates/                      # HTML
+   |    |    |-- includes/                  # Static templates
+   |    |    |    |-- *.html                # includes templates
    |    |    
-   |    |    |-- layouts/                   # Base 파일
+   |    |    |-- macros/                    # Macro templates
+   |    |    |    |-- macros.html           # macros templates
+   |    |    
+   |    |    |-- layouts/                   # Base
+   |    |    |    |-- base.html             # base templates
    |    |        
-   |    |    |-- accounts/                  # 로그인 관련 폴더
-   |    |    |    |-- login.html            # 로그인
-   |    |    |    |-- register.html         # 등록
-   |    |    |
-   |    |    |-- home/                      # UI 폴더
+   |    |    |-- accounts/                  # Login
+   |    |    |    |-- login.html            # login and register templates
+   |    |       
+   |    |    |-- home/                      # UX/UI
    |    |         |-- index.html            # Index
-   |    |         |-- 404-page.html         # 404 page
-   |    |         |-- *.html                # 모든 HTML 파
+   |    |         |-- *.html                # all UX/UI templates
+   
+   |    |    |-- errors/                    # Errors
+   |    |    |    |-- *.html                # erros templates    
    |    |    
    |  config.py                             # Config
    |    __init__.py                         # Initialize the app
@@ -174,6 +181,7 @@ $ flask run
 
 
 ---
+
 
 
 

@@ -94,17 +94,17 @@ def logout():
 
 @blueprint.errorhandler(403)
 def access_forbidden():
-    return render_template('home/errors/page-403.html')
+    return render_template('errors/page-403.html')
 
 
 @blueprint.errorhandler(404)
 def not_found_error():
-    return render_template('home/errors/page-404.html')
+    return render_template('errors/page-404.html')
 
 
 @blueprint.errorhandler(500)
 def internal_error():
-    return render_template('home/errors/page-500.html')
+    return render_template('errors/page-500.html')
 
 # Simulation
 
