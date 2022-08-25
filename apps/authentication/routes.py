@@ -12,9 +12,6 @@ from apps.authentication.forms import SiteLoginForm, CreateAccountForm
 from apps.authentication.models import Users, BusinessRegisters, BusinessLists, Accomodations
 from apps.authentication.util import verify_pass, crawler_db
 
-import os, hashlib, binascii, requests, re, time, random
-from urllib.request import urlopen
-from bs4 import BeautifulSoup
 
 
 @blueprint.route('/')
@@ -140,7 +137,7 @@ def simulate_database():
             db.session.commit()
 
             accomodation = Accomodations(accomodationId=item['accomodationId'], accomodationType=item['accomodationType'],\
-                accomodationName=item['accomodationName'], accomodationImage=item['accomodationImage'])
+                accomodationName=item['accomodationName'], accomodationImage=item['accomodationImage'], accomodationPrice=item['accomodationPrice'])
 
             db.session.add(accomodation)
             db.session.commit()

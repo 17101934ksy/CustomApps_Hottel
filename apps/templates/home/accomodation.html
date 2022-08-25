@@ -1,3 +1,4 @@
+{% from 'home/macros/macros.html' import data_accomodation, data_breadcrumb %}
 {% extends "layouts/base.html" %}
 
 <!-- Specific CSS goes HERE -->
@@ -19,18 +20,7 @@
 
     {% include 'includes/header.html' %}
     <!--================Breadcrumb Area =================-->
-    <section class="breadcrumb_area">
-        <div class="overlay bg-parallax" data-stellar-ratio="0.8" data-stellar-vertical-offset="0" data-background=""></div>
-        <div class="container">
-            <div class="page-cover text-center">
-                <h2 class="page-cover-tittle">Accomodation</h2>
-                <ol class="breadcrumb">
-                    <li><a href="index.html">Home</a></li>
-                    <li class="active">Accomodation</li>
-                </ol>
-            </div>
-        </div>
-    </section>
+    {{ data_breadcrumb(templateName) }}
     <!--================Breadcrumb Area =================-->
     
     <!--================ Accomodation Area  =================-->
@@ -155,32 +145,14 @@
         </div>
     </section>
     <!--================Booking Tabel Area  =================-->
-    <!--================ Accomodation Area  =================-->
-    <section class="accomodation_area section_gap">
-        <div class="container">
-            <div class="section_title text-center">
-                <h2 class="title_color">Normal Accomodation</h2>
-                <p>We all live in an age that belongs to the young at heart. Life that is becoming extremely fast,</p>
-            </div>
-            <div class="row accomodation_two">
-                {% for idx, (id, name, image) in enumerate(zip(accomodationId, accomodationName, accomodationImage)) %}
-                <div class="col-lg-3 col-sm-6">
-                    <div class="accomodation_item text-center">
-                        <div class="hotel_img">
-                            <img src="{{ image }}" alt="{{ config.ASSETS_ROOT }}/image/room{{ idx }}.jpg">
-                            <a href="#" class="btn theme_btn button_hover">Book Now</a>
-                        </div>
-                        <a href="#"><h4 class="sec_h4">{{ name }}</h4></a>
-                        <h5>$250<small>{{id}}</small></h5>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-    </section>
-    <!--================ Accomodation Area  =================-->
-    {% include 'includes/footer.html' %}
 
+    <!--================ Nomal-Accomodation Area  =================-->
+    {{ data_accomodation(accomodationName, accomodationImage, accomodationPrice, zip, enumerate)}}
+    <!--================ Accomodation Area  =================-->
+
+    <!--================ Footer Area  =================-->
+    {% include 'includes/footer.html' %}
+    <!--================ Footer Area  =================-->
 
 
 {% endblock content %}

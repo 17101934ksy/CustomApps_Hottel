@@ -1,9 +1,6 @@
-import os, hashlib, binascii, requests, re, time, random
+import os, hashlib, binascii, re
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
-
-# Inspiration -> https://www.vitoshacademy.com/hashing-passwords-in-python/
-
 
 def hash_pass(password):
     """Hash a password for storing."""
@@ -40,7 +37,7 @@ def crawler_db(dbname):
         btfs = BeautifulSoup(url, "html.parser")
 
         accomodations_json = {"Accomodations":[]}
-        accomodations_id, accomodations_image, accomodations_name, accomodations_type = [], [], [], []
+        accomodations_id, accomodations_image, accomodations_name, accomodations_type, accomodations_price = [], [], [], [], []
 
         for idx, a in enumerate(btfs.find_all('a', {'class': 'ListItem_container__1z7jK SubhomeList_item__1IR4d'})):
             
@@ -65,10 +62,13 @@ def crawler_db(dbname):
 
             print(idx)
 
-        if len(accomodations_id) == len(accomodations_type) == len(accomodations_image) == len(accomodations_name):
-            for id, acctype, image, name in zip(accomodations_id, accomodations_type, accomodations_image, accomodations_name):
+        for div in btfs.find_all('div', {'class': 'ListItem_priceContainer__2Asmo'}):
+            accomodations_price.append(div.text)
+
+        if len(accomodations_id) == len(accomodations_type) == len(accomodations_image) == len(accomodations_name) == len(accomodations_price):
+            for id, acctype, image, name, price in zip(accomodations_id, accomodations_type, accomodations_image, accomodations_name, accomodations_price):
                 accomodations_json['Accomodations'].append({"accomodationId": id, "accomodationType": acctype, \
-                    "accomodationName": name, "accomodationImage": image})
+                    "accomodationName": name, "accomodationImage": image, "accomodationPrice": price})
         else: 
             raise IndexError("인덱스 에러")
 
@@ -83,3 +83,4 @@ def crawler_db(dbname):
     }
 
     return action[dbname]
+

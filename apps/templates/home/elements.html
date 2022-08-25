@@ -1,3 +1,4 @@
+{% from 'home/macros/macros.html' import data_breadcrumb %}
 {% extends "layouts/base.html" %}
 
 <!-- Specific CSS goes HERE -->
@@ -19,18 +20,7 @@
 
     {% include 'includes/header.html' %}
     <!--================Breadcrumb Area =================-->
-	<section class="breadcrumb_area blog_banner_two">
-		<div class="overlay bg-parallax" data-stellar-ratio="0.8" data-stellar-vertical-offset="0" data-background=""></div>
-		<div class="container">
-			<div class="page-cover text-center">
-				<h2 class="page-cover-tittle f_48">Elements</h2>
-				<ol class="breadcrumb">
-					<li><a href="index.html">Home</a></li>
-					<li class="active">Elements</li>
-				</ol>
-			</div>
-		</div>
-	</section>
+	{{ data_breadcrumb(templateName)}}
 	<!--================Breadcrumb Area =================-->
 	
 	<!-- Start Sample Area -->

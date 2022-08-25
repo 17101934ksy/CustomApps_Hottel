@@ -1,24 +1,8 @@
-from apps.authentication.models import Accomodations
+from apps.authentication.fetch import fetch_accomodations
 from apps.home import blueprint
 from flask import render_template, request
 from flask_login import login_required
 from jinja2 import TemplateNotFound
-
-
-
-
-@blueprint.route('/index')
-def index():
-    accomodations = Accomodations.query.order_by(Accomodations.accomodationId.desc()).limit(8).all()
-    ids, names, images = [], [], []
-
-    for accomodation in accomodations:
-        ids.append(accomodation.accomodationId)
-        names.append(accomodation.accomodationName)
-        images.append(accomodation.accomodationImage)
-
-    return render_template('home/index.html', accomodationId=ids, accomodationName=names, accomodationImage=images, \
-        zip=zip, enumerate=enumerate) 
 
 @blueprint.route('/<template>')
 def route_template(template):
@@ -43,30 +27,50 @@ def route_template(template):
 
 # Helper - Extract current page name from request
 def get_segment(request):
-
     try:
-
         segment = request.path.split('/')[-1]
-
         if segment == '':
             segment = 'index'
-
         return segment
-
     except:
         return None
 
 
+@blueprint.route('/index')
+def index():
+
+    ids, names, images, prices = fetch_accomodations(8)
+
+    return render_template('home/index.html', accomodationId=ids, accomodationName=names, accomodationImage=images, accomodationPrice=prices, \
+        zip=zip, enumerate=enumerate) 
+
 @blueprint.route('/accomodation')
 def view_accomodation():
-
-    accomodations = Accomodations.query.order_by(Accomodations.accomodationId.desc()).limit(20).all()
-    ids, names, images = [], [], []
-
-    for accomodation in accomodations:
-        ids.append(accomodation.accomodationId)
-        names.append(accomodation.accomodationName)
-        images.append(accomodation.accomodationImage)
-
-    return render_template('home/accomodation.html', accomodationId=ids, accomodationName=names, accomodationImage=images, \
+    ids, names, images, prices = fetch_accomodations(20)
+    return render_template('home/accomodation.html', templateName='accomodation', accomodationId=ids, accomodationName=names, accomodationImage=images, accomodationPrice=prices, \
         zip=zip, enumerate=enumerate)    
+
+@blueprint.route('/about')
+def view_about():
+    return render_template('home/about.html', templateName='about')
+
+@blueprint.route('/blog')
+def view_blog():
+    return render_template('home/blog.html', templateName='blog')
+
+@blueprint.route('/blog-single')
+def view_blog_single():
+    return render_template('home/blog-single.html', templateName='blog-single')
+
+@blueprint.route('/contact')
+def view_contact():
+    return render_template('home/contact.html', templateName='contact')
+
+@blueprint.route('/gallery')
+def view_gallery():
+    return render_template('home/gallery.html', templateName='gallery')
+
+
+@blueprint.route('/elements')
+def view_elements():
+    return render_template('home/elements.html', templateName='elements')

@@ -12,6 +12,7 @@ def testjson():
     accomodations_id = []
     accomodations_image = []
     accomodations_name = []
+    accomodations_price = []
 
     for a in btfs.find_all('a', {'class': 'ListItem_container__1z7jK SubhomeList_item__1IR4d'}):
 
@@ -28,9 +29,13 @@ def testjson():
 
         accomodations_name.append(div.text)
 
-    if len(accomodations_id) == len(accomodations_image) == len(accomodations_name):
-        for id, image, name in zip(accomodations_id, accomodations_image, accomodations_name):
-            accomodations_json['Accomodations'].append({"accomodationId": id, "accomodationName": name, "accomodationImage": image})
+    for div in btfs.find_all('div', {'class': 'ListItem_priceContainer__2Asmo'}):
+        accomodations_price.append(div.text)
+
+    if len(accomodations_id) == len(accomodations_image) == len(accomodations_name) == len(accomodations_price):
+        for id, image, name, price in zip(accomodations_id, accomodations_image, accomodations_name, accomodations_price):
+            accomodations_json['Accomodations'].append({"accomodationId": id, "accomodationName": name, \
+                "accomodationImage": image, "accomodationPrice": price})
     else: 
         raise IndexError("인덱스 에러")
 

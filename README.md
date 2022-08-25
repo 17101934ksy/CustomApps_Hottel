@@ -5,8 +5,16 @@
 - 👉 서비스 소개
 
 <img src="https://user-images.githubusercontent.com/88478829/186391655-470d1ac5-a34a-4dfa-b7ae-0d5754631c91.png" width="width 50%" height="height 50%"> </image>
+<br/>
+> 🚀 '열정페이'동아리의 페이팀 소개
 
-
+역할|이름|학번|Git|개발|
+---|---|---|---|---|
+기획|우명균|19102006|[---](---)|서비스 기획
+개발|고세윤|17101934|[17101934ksy](https://github.com/17101934ksy)|데이터베이스, 백엔드
+개발|김소연|21101039|[---](---)|프론트
+개발|황지연|21101989|[ghkdwldus0807](https://github.com/ghkdwldus0807)|프론트
+<br/>
 > 🚀 Built with Flask
 
 - 👉 UX/UI 템플릿 소스 : https://themewagon.com/theme-categories/premium-templates/
@@ -166,5 +174,6 @@ $ flask run
 
 
 ---
+
 
 

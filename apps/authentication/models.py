@@ -75,6 +75,8 @@ class Accomodations(db.Model):
     accomodationType = Column(String(100), nullable=False)
     accomodationName = Column(String(100), nullable=False)
     accomodationImage = Column(String(300))
+    accomodationPrice = Column(String(200))
+
     businessLists = db.relationship('BusinessLists', backref='Accomodations')
 
     def __repr__(self):
@@ -82,7 +84,8 @@ class Accomodations(db.Model):
             "accomodationId": self.accomodationId,
             "accomodationType": self.accomodationType,
             "accomodationName": self.accomodationName,
-            "accomodationImage": self.accomodationImage
+            "accomodationImage": self.accomodationImage,
+            "accomodationPrice": self.accomodationPrice,
         }
         return str(self.info)
    
