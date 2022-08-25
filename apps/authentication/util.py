@@ -44,8 +44,6 @@ def crawler_db(dbname):
 
         for idx, a in enumerate(btfs.find_all('a', {'class': 'ListItem_container__1z7jK SubhomeList_item__1IR4d'})):
             
-            if idx % 10 == 0:
-                time.sleep(random.randint(7, 10))
             id = re.sub(r'[^0-9]', '', a.get('href'))
             acctype = re.sub(r'[^a-zA-Z]', '', a.get('href'))
             accomodations_type.append(acctype)
@@ -54,8 +52,7 @@ def crawler_db(dbname):
             print(idx)
 
         for idx, div in enumerate(btfs.find_all('div', {'class': 'ListItem_image__nEbnK'})):
-            if idx % 10 == 0:
-                time.sleep(random.randint(7, 10))
+
             image_text = div.get('style')
             image = image_text[21:-1] if image_text[:20] == "background-image:url" else ""
             accomodations_image.append(image)
@@ -63,8 +60,6 @@ def crawler_db(dbname):
             print(idx)
 
         for idx, div in enumerate(btfs.find_all('div', {'class': 'ListItem_title__1-j89'})):
-            if idx % 10 == 0:
-                time.sleep(random.randint(7, 10))
 
             accomodations_name.append(div.text)
 

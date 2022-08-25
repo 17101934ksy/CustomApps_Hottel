@@ -111,8 +111,8 @@ def internal_error():
 
 # Simulation
 
-@blueprint.route('/simulation_database', methods=['GET', 'POST'])
-def simulation_database():
+@blueprint.route('/simulate_database', methods=['GET', 'POST'])
+def simulate_database():
 
     if str(session['user_id']) == '1':  
         data = crawler_db('Accomodations')
@@ -151,11 +151,28 @@ def simulation_database():
 
 @blueprint.route('/test_test', methods=['GET', 'POST'])
 def test_test():
-    url = urlopen("https://www.yanolja.com/hotel")
-    btfs = BeautifulSoup(url, "html.parser")
+    # url = urlopen("https://www.yanolja.com/hotel")
+    # btfs = BeautifulSoup(url, "html.parser")
 
-    data = []
-    for a in btfs.find_all('a', {'class': 'ListItem_container__1z7jK SubhomeList_item__1IR4d'}):
-        data.append(a)
+    # data = []
+    # for a in btfs.find_all('a', {'class': 'ListItem_container__1z7jK SubhomeList_item__1IR4d'}):
+    #     data.append(a)
+
+    # return str(data)
+
+    # user = Users.query.order_by(Users.userId.desc()).limit(5).all()
+    # return str(user)
     
-    return str(data)
+    accomodations = Accomodations.query.order_by(Accomodations.accomodationId.desc()).limit(5).all()
+
+    ids, names, images = [], [], []
+
+    for accomodation in accomodations:
+        print(accomodation.accomodationId)
+
+    return str(accomodations)
+
+    # businesslists = BusinessLists.query.order_by(BusinessLists.businessId.desc()).limit(5).all()
+    # print(type(businesslists))
+    # print(businesslists[0])
+    # return str(businesslists)

@@ -1,3 +1,4 @@
+from apps.authentication.models import Accomodations
 from apps.home import blueprint
 from flask import render_template, request
 from flask_login import login_required
@@ -8,8 +9,16 @@ from jinja2 import TemplateNotFound
 
 @blueprint.route('/index')
 def index():
-    return render_template('home/index.html', segment='index')
+    accomodations = Accomodations.query.order_by(Accomodations.accomodationId.desc()).limit(8).all()
+    ids, names, images = [], [], []
 
+    for accomodation in accomodations:
+        ids.append(accomodation.accomodationId)
+        names.append(accomodation.accomodationName)
+        images.append(accomodation.accomodationImage)
+
+    return render_template('home/index.html', accomodationId=ids, accomodationName=names, accomodationImage=images, \
+        zip=zip, enumerate=enumerate) 
 
 @blueprint.route('/<template>')
 def route_template(template):
@@ -46,3 +55,18 @@ def get_segment(request):
 
     except:
         return None
+
+
+@blueprint.route('/accomodation')
+def view_accomodation():
+
+    accomodations = Accomodations.query.order_by(Accomodations.accomodationId.desc()).limit(20).all()
+    ids, names, images = [], [], []
+
+    for accomodation in accomodations:
+        ids.append(accomodation.accomodationId)
+        names.append(accomodation.accomodationName)
+        images.append(accomodation.accomodationImage)
+
+    return render_template('home/accomodation.html', accomodationId=ids, accomodationName=names, accomodationImage=images, \
+        zip=zip, enumerate=enumerate)    

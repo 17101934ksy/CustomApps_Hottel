@@ -23,7 +23,13 @@ class Users(db.Model, UserMixin):
             setattr(self, property, value)
 
     def __repr__(self):
-        return str(self.userName)
+        self.info = {
+            "userId": self.userId,
+            "userName": self.userName,
+            "email": self.email,
+            "phoneNumber": self.phoneNumber
+        }
+        return str(self.info)
 
 
 class BusinessRegisters(db.Model):
@@ -33,8 +39,15 @@ class BusinessRegisters(db.Model):
     businessRegisId = Column(Integer, primary_key=True, autoincrement=True)
     userId = Column(Integer, ForeignKey('Users.userId'))
     businessNumber = Column(String(200), unique=True, nullable=False)
-
     users = db.relationship('Users', backref='BusinessRegisters')
+
+    def __repr__(self):
+        self.info = {
+            "businessRegisId": self.businessRegisId,
+            "userId": self.userId,
+            "businessNumber": self.businessNumber
+        }
+        return str(self.info)
 
 
 class BusinessLists(db.Model):
@@ -44,8 +57,15 @@ class BusinessLists(db.Model):
     businessId = Column(Integer, primary_key=True)
     businessAddr = Column(String(200), nullable=False, unique=True)
     userId = Column(Integer, ForeignKey('Users.userId'))
-
     user = db.relationship('Users', backref='BusinessLists')
+
+    def __repr__(self):
+        self.info = {
+            "businessId": self.businessId,
+            "businessAddr": self.businessAddr,
+            "userId": self.userId
+        }
+        return str(self.info)
 
 class Accomodations(db.Model):
 
@@ -55,9 +75,16 @@ class Accomodations(db.Model):
     accomodationType = Column(String(100), nullable=False)
     accomodationName = Column(String(100), nullable=False)
     accomodationImage = Column(String(300))
-
     businessLists = db.relationship('BusinessLists', backref='Accomodations')
 
+    def __repr__(self):
+        self.info = {
+            "accomodationId": self.accomodationId,
+            "accomodationType": self.accomodationType,
+            "accomodationName": self.accomodationName,
+            "accomodationImage": self.accomodationImage
+        }
+        return str(self.info)
    
 class Rooms(db.Model):
 
@@ -67,18 +94,35 @@ class Rooms(db.Model):
     roomDateTime = Column(DateTime, nullable=False)
     roomNumber = Column(Integer, nullable=False)
     roomName = Column(String(200), nullable=False)
-    romeCheckIn = Column(DateTime, nullable=False)
-    romeCheckOut = Column(DateTime, nullable=False)
+    roomCheckIn = Column(DateTime, nullable=False)
+    roomCheckOut = Column(DateTime, nullable=False)
     roomStandardPopulation =Column(Integer)
     roomUptoPopulation =Column(Integer)
-    romeImage = Column(String(300))
+    roomImage = Column(String(300))
     roomSalePrice = Column(String(100), nullable=True)
-    romeOriginalPrice = Column(String(100))
+    roomOriginalPrice = Column(String(100))
     roomRate = Column(Float, nullable=True)
     accomodationId = Column(Integer, ForeignKey('Accomodations.accomodationId'))
 
     accomodations = db.relationship('Accomodations', backref='Rooms')
 
+    def __repr__(self):
+        self.info = {
+            "roomId": self.roomId,
+            "roomDateTime": self.roomDateTime,
+            "roomNumber": self.roomNumber,
+            "roomName": self.roomName,
+            "romeCheckIn": self.roomCheckIn,
+            "romeCheckOut": self.roomCheckOut,
+            "roomStandardPopulation": self.roomStandardPopulation,
+            "roomUptoPopulation": self.roomUptoPopulation,
+            "romeImage": self.roomImage,
+            "roomSalePrice": self.roomSalePrice,
+            "romeOriginalPrice": self.roomOriginalPrice,
+            "roomRate": self.roomRate,
+            "accomodationId": self.accomodationId
+        }
+        return str(self.info) 
 
 class Carts(db.Model):
 
@@ -90,6 +134,14 @@ class Carts(db.Model):
 
     users = db.relationship('Users', backref='Carts')
     rooms = db.relationship('Rooms', backref='Carts')
+
+    def __repr__(self):
+        self.info = {
+            "cartId": self.cartId,
+            "userId": self.userId,
+            "roomId": self.roomId
+        }
+        return str(self.info)
     
 class Reservations(db.Model):
     
@@ -102,6 +154,14 @@ class Reservations(db.Model):
 
     carts = db.relationship('Carts', backref='Reservations')
 
+    def __repr__(self):
+        self.info = {
+            "reserveId": self.reserveId,
+            "reserveTime": self.reserveTime,
+            "reservePrice": self.reservePrice,
+            "cartId": self.cartId
+        }
+        return str(self.info) 
 
 @login_manager.user_loader
 def user_loader(userId):
