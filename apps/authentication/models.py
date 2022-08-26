@@ -8,7 +8,7 @@ class Users(db.Model, UserMixin):
     __tablename__ = 'Users'
 
     userId = Column(Integer, primary_key=True, autoincrement=True)
-    userName = Column(String(64), nullable=False, unique=True)
+    userName = Column(String(64), nullable=False, unique=True) 
     password = Column(LargeBinary, nullable=False)
     email = Column(String(64), unique=True, nullable=False)
     phoneNumber = Column(String(64), nullable=False)
@@ -165,6 +165,67 @@ class Reservations(db.Model):
             "cartId": self.cartId
         }
         return str(self.info) 
+
+
+class Testimonials(db.Model):
+
+    __tablename__ = 'Testimonials'
+
+    testimonialId = Column(Integer, primary_key=True, autoincrement=True)
+    userId = Column(Integer, ForeignKey('Users.userId'))
+    testimonialComment = Column(String(1000), nullable=False)
+
+    users = db.relationship('Users', backref='Testimonials')
+
+    def __repr__(self):
+        self.info = {
+            "testimonialId": self.testimonialId,
+            "userId": self.userId,
+            "testimonialComment": self.testimonialComment,
+        }
+        return str(self.info) 
+
+
+class Reviews(db.Model):
+    
+    __tablename__ = 'Reviews'
+
+    reviewId = Column(Integer, primary_key=True, autoincrement=True)
+    userId = Column(Integer, ForeignKey('Users.userId'))
+    reviewImage1 = Column(String(400), nullable=True)
+    reviewImage2 = Column(String(400), nullable=True)
+    reviewImage3 = Column(String(400), nullable=True)
+    reviewComment = Column(String(1000), nullable=False)
+
+    users = db.relationship('Users', backref='Reviews')
+
+    def __repr__(self):
+        self.info = {
+            "reviewId": self.reviewId,
+            "userId": self.userId,
+            "reviewImage1": self.reviewImage1,
+            "reviewImage2": self.reviewImage2,
+            "reviewImage3": self.reviewImage3,
+            "reviewComment": self.reviewComment,
+        }
+        return str(self.info) 
+
+class Points(db.Model):
+
+    __tablename__ = 'Points'
+
+    userId = Column(Integer, ForeignKey('Users.userId'), primary_key=True)
+    pointSum = Column(Integer)
+
+    users = db.relationship('Users', backref='Points')
+
+    def __repr__(self):
+        self.info = {
+            "userId": self.userId,
+            "pointSum": self.pointSum,
+        }
+        return str(self.info) 
+
 
 @login_manager.user_loader
 def user_loader(userId):

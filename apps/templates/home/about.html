@@ -1,4 +1,4 @@
-{% from 'macros/macros.html' import data_breadcrumb %}
+{% from 'macros/macros.html' import data_breadcrumb, data_testimonial %}
 {% extends "layouts/base.html" %}
 
 <!-- Specific CSS goes HERE -->
@@ -48,7 +48,7 @@
     <!--================ Facilities Area  =================-->
 
     <!--================ Testimonial Area  =================-->
-    {% include 'includes/testimonial.html' %}
+    {{ data_testimonial(userId, userName, testimonialComment, zip) }}
     <!--================ Testimonial Area  =================-->
 
     {% include 'includes/footer.html' %}

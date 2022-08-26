@@ -14,8 +14,8 @@
                         <img src="{{ image }}" alt="{{ config.ASSETS_ROOT }}/image/room{{ idx }}.jpg">
                         <a href="#" class="btn theme_btn button_hover">Book Now</a>
                     </div>
-                    <a href="#"><h4 class="sec_h4">{{ name }}</h4></a>
-                    <h5>{{price}}<small>hotel</small></h5>
+                    <a href="#"><h6 class="sec_h4">{{ name }}</h6></a>
+                    <h6>{{price}}<small>hotel</small></h6>
                 </div>
             </div>
             {% endfor %}
@@ -40,4 +40,35 @@
     </div>
 </section>
 
-{% endmacro%}
+{% endmacro %}
+
+{% macro data_testimonial(userId, userName, testimonialComment, zip) %}
+
+<section class="testimonial_area section_gap">
+    <div class="container">
+        <div class="section_title text-center">
+            <h2 class="title_color">Testimonial from our Clients</h2>
+            <p>The French Revolution constituted for the conscience of the dominant aristocratic class a fall from </p>
+        </div>
+        <div class="testimonial_slider owl-carousel">
+            {% for id, name, comment in zip(userId, userName, testimonialComment)  %}
+            <div class="media testimonial_item">
+                <img class="rounded-circle" src="{{ config.ASSETS_ROOT }}/image/userimage/{{id}}.jpg" alt="{{ config.ASSETS_ROOT }}/image/userimage/1.jpg">
+                <div class="media-body">
+                    <p>{{ comment }} </p>
+                    <a href="#"><h4 class="sec_h4">{{ name }}</h4></a>
+                    <div class="star">
+                        <a href="#"><i class="fa fa-star"></i></a>
+                        <a href="#"><i class="fa fa-star"></i></a>
+                        <a href="#"><i class="fa fa-star"></i></a>
+                        <a href="#"><i class="fa fa-star"></i></a>
+                        <a href="#"><i class="fa fa-star-half-o"></i></a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}    
+        </div>
+    </div>
+</section>
+
+{% endmacro %}

@@ -1,4 +1,4 @@
-{% from 'macros/macros.html' import data_accomodation %}
+{% from 'macros/macros.html' import data_accomodation, data_testimonial %}
 {% extends "layouts/base.html" %}
 
 <!-- Specific CSS goes HERE -->
@@ -53,7 +53,7 @@
     <!--================ About History Area  =================-->
 
     <!--================ Testimonial Area  =================-->
-    {% include 'includes/testimonial.html' %}
+    {{ data_testimonial(userId, userName, testimonialComment, zip) }}
     <!--================ Testimonial Area  =================-->
 
     <!--================ Latest Blog Area  =================-->

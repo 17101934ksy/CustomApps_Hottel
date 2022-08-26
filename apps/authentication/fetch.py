@@ -1,4 +1,4 @@
-from apps.authentication.models import Accomodations
+from apps.authentication.models import Accomodations, Testimonials, Users
 
 """
 databases에서 데이터를 가져오는 func
@@ -17,5 +17,15 @@ def fetch_accomodations(number):
     
     return ids, names, images, prices
 
-def fetch_about(number):
-    return number
+def fetch_testimonial(number):
+
+    testimonials = Testimonials.query.order_by(Testimonials.testimonialId.desc()).limit(number).all()
+    ids, names, comments = [], [], []
+
+    for testimonial in testimonials:
+        users = Users.query.filter_by(userId=testimonial.userId).first()
+        ids.append(users.userId)
+        names.append(users.userName)
+        comments.append(testimonial.testimonialComment)
+
+    return ids, names, comments

@@ -9,7 +9,7 @@ from flask_login import (
 from apps import db, login_manager
 from apps.authentication import blueprint
 from apps.authentication.forms import SiteLoginForm, CreateAccountForm
-from apps.authentication.models import Users, BusinessRegisters, BusinessLists, Accomodations
+from apps.authentication.models import Testimonials, Users, BusinessRegisters, BusinessLists, Accomodations
 from apps.authentication.util import verify_pass, crawler_db
 
 
@@ -115,8 +115,14 @@ def simulate_database():
         data = crawler_db('Accomodations')
         lst_num = int(Users.query.order_by(Users.userId.desc()).first().userId)
 
+        comments = [
+            "숙박업소 기춘 예약가는 다른 사이트에 비해 합리적인 가격을 제시하며, 디자인이 깔끔합니다.",
+            "모텔, 호텔, 리조트.콘도, 펜션/풀빌라 등 다양한 숙박 시설을 예약할 수 있습니다.",
+            "예약 시설에 대한 상세 정보를 제공합니다.",
+            "출장이 있어서 숙박을 잡다보면, 출장 위치와 숙박 장소가 먼 경우가 있는데, 거리 계산 기능을 제공하여 손 쉽게 확인할 수 있습니다."
+            ]
 
-        for item in data['Accomodations']:
+        for idx, item in enumerate(data['Accomodations']):
             accomodation = Accomodations.query.filter_by(accomodationId=item['accomodationId']).first()
             if accomodation is not None:
                 continue
@@ -142,24 +148,18 @@ def simulate_database():
             db.session.add(accomodation)
             db.session.commit()
 
+            testimonial = Testimonials(userId=lst_num, testimonialComment=comments[idx%len(comments)])
+            
+            db.session.add(testimonial)
+            db.session.commit()
+
         return str("session clear")
     return str("session fail")
 
 
 @blueprint.route('/test_test', methods=['GET', 'POST'])
 def test_test():
-    # url = urlopen("https://www.yanolja.com/hotel")
-    # btfs = BeautifulSoup(url, "html.parser")
 
-    # data = []
-    # for a in btfs.find_all('a', {'class': 'ListItem_container__1z7jK SubhomeList_item__1IR4d'}):
-    #     data.append(a)
-
-    # return str(data)
-
-    # user = Users.query.order_by(Users.userId.desc()).limit(5).all()
-    # return str(user)
-    
     accomodations = Accomodations.query.order_by(Accomodations.accomodationId.desc()).limit(5).all()
 
     ids, names, images = [], [], []
@@ -168,8 +168,3 @@ def test_test():
         print(accomodation.accomodationId)
 
     return str(accomodations)
-
-    # businesslists = BusinessLists.query.order_by(BusinessLists.businessId.desc()).limit(5).all()
-    # print(type(businesslists))
-    # print(businesslists[0])
-    # return str(businesslists)

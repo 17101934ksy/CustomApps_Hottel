@@ -1,4 +1,4 @@
-from apps.authentication.fetch import fetch_accomodations
+from apps.authentication.fetch import fetch_accomodations, fetch_testimonial
 from apps.home import blueprint
 from flask import render_template, request
 from flask_login import login_required
@@ -39,24 +39,33 @@ def get_segment(request):
 @blueprint.route('/index')
 def index():
 
-    ids, names, images, prices = fetch_accomodations(8)
+    ids, names, images, prices = fetch_accomodations(20)
+    uids, unames, comments = fetch_testimonial(8)
 
-    return render_template('home/index.html', accomodationId=ids, accomodationName=names, accomodationImage=images, accomodationPrice=prices, \
-        zip=zip, enumerate=enumerate) 
+    return render_template('home/index.html', accomodationId=ids, accomodationName=names, accomodationImage=images, \
+        accomodationPrice=prices, userId=uids, userName=unames, testimonialComment=comments, zip=zip, enumerate=enumerate) 
 
 @blueprint.route('/accomodation')
 def view_accomodation():
+
     ids, names, images, prices = fetch_accomodations(20)
+
     return render_template('home/accomodation.html', templateName='accomodation', accomodationId=ids, accomodationName=names, accomodationImage=images, accomodationPrice=prices, \
         zip=zip, enumerate=enumerate)    
 
 @blueprint.route('/about')
 def view_about():
-    return render_template('home/about.html', templateName='about')
+
+    uids, unames, comments = fetch_testimonial(8)
+
+    return render_template('home/about.html', templateName='about', userId=uids, userName=unames, testimonialComment=comments, zip=zip)
 
 @blueprint.route('/blog')
 def view_blog():
-    return render_template('home/blog.html', templateName='blog')
+    
+    return render_template('home/blog.html', templateName='blog', blogWriters='', blogDates='', blogViews='', blogComments='', \
+        blogHeads='', blogContents='', blogLinks='', blogTags='', pageFocus='', postHeads='',  postLinks='', \
+        contentCounts='' , contentSubjects='', zip=zip, enumerat=enumerate)
 
 @blueprint.route('/blog-single')
 def view_blog_single():

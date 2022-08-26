@@ -10,7 +10,7 @@
 
 역할|이름|학번|Git|개발|
 ---|---|---|---|---|
-기획|우명균|19102006|[---](---)|서비스 기획
+기획|우명균|19102006|[woomk](https://github.com/woomk)|서비스 기획
 팀장|고세윤|17101934|[17101934ksy](https://github.com/17101934ksy)|백엔드, 프론트
 개발|김소연|21101039|[thdus](https://github.com/thdus)|프론트
 개발|황지연|21101989|[ghkdwldus0807](https://github.com/ghkdwldus0807)|프론트
