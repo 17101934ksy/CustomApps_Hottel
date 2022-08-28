@@ -1,7 +1,7 @@
 from flask_login import UserMixin
 from apps import db, login_manager
 from apps.authentication.util import hash_pass
-from sqlalchemy import Column, Integer, String, LargeBinary, DateTime, ForeignKey, Float
+from sqlalchemy import Column, Integer, String, LargeBinary, DateTime, ForeignKey, Float, TEXT
 
 class Users(db.Model, UserMixin):
 
@@ -224,6 +224,43 @@ class Points(db.Model):
             "userId": self.userId,
             "pointSum": self.pointSum,
         }
+        return str(self.info) 
+
+class Magazines(db.Model):
+
+    __tablename__ = 'Magazines'
+
+    magazineSeq = Column(Integer, primary_key=True, autoincrement=True)
+    magazineId = Column(Integer, ForeignKey('Users.userId'))
+    magazineThema = Column(String(200), nullable=False)
+    magazineWriter = Column(String(400), nullable=False)
+    magazineDate = Column(DateTime, nullable=False)
+    magazineView = Column(Integer, nullable=False)
+    magazineTitle = Column(String(400), nullable=False)
+    magazineSubTitle = Column(String(400), nullable=True)
+    magazineContent = Column(TEXT, nullable=False)
+    magazineLink= Column(String(700), nullable=False)
+    magazineTag= Column(String(800), nullable=False)
+    magazineImage = Column(String(1000), nullable=True)
+
+    users = db.relationship('Users', backref='Magazines')
+
+    def __repr__(self):
+        self.info = {
+            "magazineSeq": self.magazineSeq,
+            "magazineId": self.magazineId,
+            "magazineThema": self.magazineThema,
+            "magazineWriter": self.magazineWriter,
+            "magazineDate": self.magazineDate,
+            "magazineView": self.magazineView,
+            "magazineTitle": self.magazineTitle,
+            "magazineSubTitle": self.magazineSubTitle,
+            "magazineContent": self.magazineContent,
+            "magazineLink": self.magazineLink,
+            "magazineTag": self.magazineTag,
+            "magazineImage": self.magazineImage
+        }
+
         return str(self.info) 
 
 

@@ -3,6 +3,7 @@ from apps.home import blueprint
 from flask import render_template, request
 from flask_login import login_required
 from jinja2 import TemplateNotFound
+import datetime
 
 @blueprint.route('/<template>')
 def route_template(template):
@@ -63,6 +64,8 @@ def view_about():
 @blueprint.route('/blog')
 def view_blog():
     
+
+
     return render_template('home/blog.html', templateName='blog', blogWriters='', blogDates='', blogViews='', blogComments='', \
         blogHeads='', blogContents='', blogLinks='', blogTags='', pageFocus='', postHeads='',  postLinks='', \
         contentCounts='' , contentSubjects='', zip=zip, enumerat=enumerate)

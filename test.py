@@ -41,7 +41,77 @@ def testjson():
 
     return json.dumps(accomodations_json)
 
+
+def test_magazine():
+
+    url = urlopen("https://www.yanolja.com/magazine/discover-korea")
+    btfs = BeautifulSoup(url, "html.parser")
+
+    magazines_json = {"Accomodations":[]}
+    magazines_seq, magazines_id, magazines_thema, magazines_writer, magazines_date, magazines_view, \
+        magazines_title, magazines_subtitle, magazines_content, magazines_link, magazines_tag, magazines_image = \
+        [], [], [], [], [], [], [], [], [], [], [], []
+
+    for idx, a in enumerate(btfs.find_all('a', {'class': 'Unit_container__3i4u5'})):
+        
+        magazine_link = a.get('href')
+        magazines_link.append("https://www.yanolja.com" + magazine_link)
+
+    for idx, div in enumerate(btfs.find_all('div', {'class': 'ImageFallback_body__UgBLm'})):
+        
+        magazine_style = div.get('style')
+        magazine_image = magazine_style[21:-1] if magazine_style[:20] == "background-image:url" else ""
+        magazines_image.append(magazine_image)
+
+    # for idx, p in enumerate(btfs.find_all('p', {'class': 'Unit_badge__3bA65'})):
+        
+        # print(p.contents[0])
+
+    for link in magazines_link:
+        url = urlopen(link)
+        btfs = BeautifulSoup(url, "html.parser")
+
+        writer, writer_first = None, False
+
+        for h1 in btfs.find_all('h1', {'class': 'IntroA_title__2e7J_'}):
+    
+            magazine_title = h1.contents[0]
+            magazines_title.append(magazine_title)
+
+        for p in btfs.find_all('p', {'class': 'IntroA_subTitle__3WobL'}):
+
+            magazine_subtitle = p.contents[0]
+            magazines_subtitle.append(magazine_subtitle)
+
+        for div in btfs.find_all('div', {'class': 'CaptionA_container__3JeNU'}):
+
+            magazine_writer = div.contents[0].split(" ")[-1]
+            magazines_writer.append(magazine_writer)
+
+        for div in btfs.find_all('div', {'class': 'BodyA_container__3Bm2W'}):
+
+            magazine_content = div.contents[0]
+            magazines_content.append(magazine_content)
+
+        for p in btfs.find_all('p', {'class': 'SubTitleB_assistance__1HkhO'}):
+
+            magazine_tag = p.contents[0]
+            magazines_tag.append(magazine_tag)
+
+
+    # print(magazines_link)
+    # print(magazines_image)
+    print(len(magazines_title))
+    print(len(magazines_subtitle))
+    print(magazines_writer)
+    # print(magazines_content)
+    print(len(magazines_content))
+    print(len(magazines_tag))
+
+
 if __name__ == "__main__":
-    t = testjson()
-    print(t)
-    print(type(t))
+    # t = testjson()
+    # print(t)
+    # print(type(t))
+
+    test = test_magazine()
