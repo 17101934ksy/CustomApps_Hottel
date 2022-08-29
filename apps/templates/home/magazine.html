@@ -31,14 +31,17 @@
                 <div class="col-lg-8">
                     <div class="blog_left_sidebar">
                         
-                        {% for idx, (writer, date, view, comment, head, content, blog_link, tag) in enumerate(zip(blogWriters, blogDates, blogViews, blogComments, blogHeads, blogContents, blogLinks, blogTags)) %}
+                        {% for idx, (writer, date, view, title, content, blog_link, tag, image) in enumerate(zip(blogWriters, blogDates, blogViews, blogTitles, blogContents, blogLinks, blogTags, blogImages)) %}
+                        {% if ceil(idx / 5) == int(pageNumber) %}
                         <article class="row blog_item">
                            <div class="col-md-3">
                                <div class="blog_info text-right">
                                     <div class="post_tag">
 
-                                        {% for t in {{tag}} %}
-                                        <a href="#">#{{ t }} </a>
+                                        {% for t in tag %}
+                                        {% if t.strip() != '' %}
+                                        <a href="#">#{{ t.strip() }} </a>
+                                        {% endif %}
                                         {% endfor %}
 
                                     </div>
@@ -47,22 +50,23 @@
                                         <li><a href="#">{{ writer }}<i class="lnr lnr-user"></i></a></li>
                                         <li><a href="#">{{ date }}<i class="lnr lnr-calendar-full"></i></a></li>
                                         <li><a href="#">{{ view }}<i class="lnr lnr-eye"></i></a></li>
-                                        <li><a href="#">{{ comment }} comment<i class="lnr lnr-bubble"></i></a></li>
+                                        <li><a href="#">{{ len(blogContents) }} comment<i class="lnr lnr-bubble"></i></a></li>
 
                                     </ul>
                                 </div>
                            </div>
                             <div class="col-md-9">
                                 <div class="blog_post">
-                                    <img src="{{ config.ASSETS_ROOT }}/image/blog/main-blog/m-blog-{{idx}}.jpg" alt="">
+                                    <img src="{{ image }}" alt="">
                                     <div class="blog_details">
-                                        <a href="{{ blog_link }}"><h2>{{ head }}</h2></a>
+                                        <a href="{{ blog_link }}"><h2>{{ title }}</h2></a>
                                         <p>{{ content }}</p>
                                         <a href="{{ blog_link }}" class="view_btn button_hover">View More</a>
                                     </div>
                                 </div>
                             </div>
                         </article>
+                        {% endif %}
                         {% endfor %}
                         
                         <nav class="blog-pagination justify-content-center d-flex">
@@ -75,10 +79,10 @@
                                     </a>
                                 </li>
                                 {% for idx in range(1, ceil(len(blogLinks)/5)+1) %}
-                                    {% if idx == pageFocus %}
+                                    {% if idx == pageNumber %}
                                     <li class="page-item active"><a href="#" class="page-link"> {{idx}} </a></li>
                                     {% else %}
-                                    <li class="page-item"><a href="#" class="page-link"> {{idx}} </a></li>
+                                    <li class="page-item"><a href="{{ url_for('home_blueprint.view_magazine', page_number=idx) }}" class="page-link"> {{idx}} </a></li>
                                     {% endif %}
                                 {% endfor %}
 
@@ -124,12 +128,12 @@
                         <aside class="single_sidebar_widget popular_post_widget">
                             <h3 class="widget_title">Popular Posts</h3>
 
-                            {% for idx, (head, link) in enumerate(zip(postHeads,  postLinks))%}
+                            {% for idx, (title, link, date) in enumerate(zip(postTitles,  postLinks, postDates))%}
                             <div class="media post_item">
                                 <img src="{{ config.ASSETS_ROOT }}/image/blog/post{{idx}}.jpg" alt="post">
                                 <div class="media-body">
-                                    <a href="blog-details.html"><h3>{{head}}</h3></a>
-                                    <p>0{{idx}} Hours ago</p>
+                                    <a href="blog-details.html"><h3>{{ title }}</h3></a>
+                                    <p>{{nowDate - date}}</p>
                                 </div>
                             </div>
                             {% endfor %}
@@ -147,8 +151,8 @@
                                 {% for cnt, subject in zip(contentCounts, contentSubjects) %}
                                 <li>
                                     <a href="#" class="d-flex justify-content-between">
-                                        <p>subject</p>
-                                        <p>cnt</p>
+                                        <p>{{ subject }}</p>
+                                        <p>{{ cnt }}</p>
                                     </a>
                                 </li>
                                 {% endfor %}														
@@ -177,17 +181,6 @@
                             <h4 class="widget_title">Tag Clouds</h4>
                             <ul class="list_style">
                                 <li><a href="#">Technology</a></li>
-                                <li><a href="#">Fashion</a></li>
-                                <li><a href="#">Architecture</a></li>
-                                <li><a href="#">Fashion</a></li>
-                                <li><a href="#">Food</a></li>
-                                <li><a href="#">Technology</a></li>
-                                <li><a href="#">Lifestyle</a></li>
-                                <li><a href="#">Art</a></li>
-                                <li><a href="#">Adventure</a></li>
-                                <li><a href="#">Food</a></li>
-                                <li><a href="#">Lifestyle</a></li>
-                                <li><a href="#">Adventure</a></li>
                             </ul>
                         </aside>
                     </div>

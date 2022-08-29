@@ -1,3 +1,4 @@
+from typing import Text
 from flask_login import UserMixin
 from apps import db, login_manager
 from apps.authentication.util import hash_pass
@@ -231,7 +232,7 @@ class Magazines(db.Model):
     __tablename__ = 'Magazines'
 
     magazineSeq = Column(Integer, primary_key=True, autoincrement=True)
-    magazineId = Column(Integer, ForeignKey('Users.userId'))
+    userId = Column(Integer, ForeignKey('Users.userId'))
     magazineThema = Column(String(200), nullable=False)
     magazineWriter = Column(String(400), nullable=False)
     magazineDate = Column(DateTime, nullable=False)
@@ -248,7 +249,7 @@ class Magazines(db.Model):
     def __repr__(self):
         self.info = {
             "magazineSeq": self.magazineSeq,
-            "magazineId": self.magazineId,
+            "userId": self.userId,
             "magazineThema": self.magazineThema,
             "magazineWriter": self.magazineWriter,
             "magazineDate": self.magazineDate,
@@ -260,8 +261,29 @@ class Magazines(db.Model):
             "magazineTag": self.magazineTag,
             "magazineImage": self.magazineImage
         }
-
         return str(self.info) 
+
+class Comments(db.Model):
+
+    __tablename__ = 'Comments'
+
+    commentSeq = Column(Integer, primary_key=True, autoincrement=True)
+    magazineSeq = Column(Integer, ForeignKey('Magazines.magazineSeq'))
+    userId = Column(Integer, ForeignKey('Users.userId'))
+    magazineComment = Column(TEXT)
+
+    users = db.relationship('Users', backref='Comments')
+    magazines = db.relationship('Magazines', backref='Comments')
+    
+    def __repr__(self):
+            self.info = {
+                "commentSeq": self.commentSeq,
+                "magazineSeq": self.magazineSeq,
+                "userId": self.userId,
+                "magazineComment": self.magazineComment
+            }
+            return str(self.info) 
+
 
 
 @login_manager.user_loader

@@ -9,7 +9,7 @@ from flask_login import (
 from apps import db, login_manager
 from apps.authentication import blueprint
 from apps.authentication.forms import SiteLoginForm, CreateAccountForm
-from apps.authentication.models import Testimonials, Users, BusinessRegisters, BusinessLists, Accomodations
+from apps.authentication.models import Magazines, Testimonials, Users, BusinessRegisters, BusinessLists, Accomodations
 from apps.authentication.util import verify_pass, crawler_db
 
 
@@ -112,7 +112,9 @@ def internal_error():
 def simulate_database():
 
     if str(session['user_id']) == '1':  
-        data = crawler_db('Accomodations')
+        data_accomodation = crawler_db('Accomodations')
+        data_magazine = crawler_db('Magazines')
+
         lst_num = int(Users.query.order_by(Users.userId.desc()).first().userId)
 
         comments = [
@@ -122,7 +124,7 @@ def simulate_database():
             "출장이 있어서 숙박을 잡다보면, 출장 위치와 숙박 장소가 먼 경우가 있는데, 거리 계산 기능을 제공하여 손 쉽게 확인할 수 있습니다."
             ]
 
-        for idx, item in enumerate(data['Accomodations']):
+        for idx, item in enumerate(data_accomodation['Accomodations']):
             accomodation = Accomodations.query.filter_by(accomodationId=item['accomodationId']).first()
             if accomodation is not None:
                 continue
@@ -151,6 +153,22 @@ def simulate_database():
             testimonial = Testimonials(userId=lst_num, testimonialComment=comments[idx%len(comments)])
             
             db.session.add(testimonial)
+            db.session.commit()
+
+        for idx, item in enumerate(data_magazine['Magazines']):
+            magazine = Magazines.query.filter_by(userId=idx+1).first()
+            if magazine is not None:
+                continue
+            
+            user = Users.query.filter_by(userId=idx+1).first()
+            item['userId'] = user.userId
+
+            magazine = Magazines(userId=item['userId'], magazineThema=item['magazineThema'], magazineWriter=item['magazineWriter'], \
+                magazineDate=item['magazineDate'], magazineView=item['magazineView'], magazineTitle=item['magazineTitle'], \
+                    magazineSubTitle=item['magazineSubTitle'], magazineContent=item['magazineContent'], \
+                        magazineLink=item['magazineLink'], magazineTag=item['magazineTag'], magazineImage=item['magazineImage'])
+
+            db.session.add(magazine)
             db.session.commit()
 
         return str("session clear")

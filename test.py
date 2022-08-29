@@ -2,7 +2,7 @@ import requests, re
 import json
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
-import time
+import datetime, random
 
 def testjson():
     url = urlopen("https://www.yanolja.com/hotel")
@@ -63,50 +63,44 @@ def test_magazine():
         magazine_image = magazine_style[21:-1] if magazine_style[:20] == "background-image:url" else ""
         magazines_image.append(magazine_image)
 
-    # for idx, p in enumerate(btfs.find_all('p', {'class': 'Unit_badge__3bA65'})):
+    for p in btfs.find_all('p', {'class': 'Unit_title__2o7CO'}):
         
-        # print(p.contents[0])
+        magazine_title = p.contents[0]
+        magazines_title.append(magazine_title)
 
     for link in magazines_link:
         url = urlopen(link)
         btfs = BeautifulSoup(url, "html.parser")
-
-        writer, writer_first = None, False
-
-        for h1 in btfs.find_all('h1', {'class': 'IntroA_title__2e7J_'}):
-    
-            magazine_title = h1.contents[0]
-            magazines_title.append(magazine_title)
 
         for p in btfs.find_all('p', {'class': 'IntroA_subTitle__3WobL'}):
 
             magazine_subtitle = p.contents[0]
             magazines_subtitle.append(magazine_subtitle)
 
-        for div in btfs.find_all('div', {'class': 'CaptionA_container__3JeNU'}):
-
-            magazine_writer = div.contents[0].split(" ")[-1]
-            magazines_writer.append(magazine_writer)
-
-        for div in btfs.find_all('div', {'class': 'BodyA_container__3Bm2W'}):
-
-            magazine_content = div.contents[0]
+        for div in btfs.select_one('div.BodyA_container__3Bm2W'):
+            magazine_content = div
             magazines_content.append(magazine_content)
 
-        for p in btfs.find_all('p', {'class': 'SubTitleB_assistance__1HkhO'}):
+    print(len(magazines_subtitle))
+    while (len(magazines_link) != len(magazines_subtitle)):
+        if len(magazines_link) > len(magazines_subtitle):
+            magazines_subtitle.append(magazines_subtitle[-1])
+        elif len(magazines_link) < len(magazines_subtitle):
+            magazines_subtitle.pop()
 
-            magazine_tag = p.contents[0]
-            magazines_tag.append(magazine_tag)
+    for _ in range(len(magazines_link)):
+        magazines_date.append(datetime.datetime.now())
+        magazines_view.append(random.randint(1, 1000))
 
 
-    # print(magazines_link)
-    # print(magazines_image)
+    print(len(magazines_link))
+    print(len(magazines_image))
     print(len(magazines_title))
     print(len(magazines_subtitle))
-    print(magazines_writer)
+    # print(magazines_writer)
     # print(magazines_content)
     print(len(magazines_content))
-    print(len(magazines_tag))
+    # print(len(magazines_tag))
 
 
 if __name__ == "__main__":
