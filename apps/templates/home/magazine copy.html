@@ -31,11 +31,7 @@
                 <div class="col-lg-8">
                     <div class="blog_left_sidebar">
                         
-                        {% for idx, (id, writer, date, view, title, content, magazine_link, tag, image) in enumerate(zip(magazine['userId'], magazine['magazineWriter'], 
-                        magazine['magazineDate'], magazine['magazineView'], magazine['magazineTitle'], 
-                        magazine['magazineContent'], magazine['magazineLink'], 
-                        magazine['magazineTag'], magazine['magazineImage'])) %}
-
+                        {% for idx, (id, writer, date, view, title, content, magazine_link, tag, image) in enumerate(zip(magazine['magazineIds'], magazine['magazineWriters'], magazineDates, magazineViews, magazineTitles, magazineContents, magazineLinks, magazineTags, magazineImages)) %}
                         {% if ceil(idx / 5) == int(pageNumber) %}
                         <article class="row blog_item">
                            <div class="col-md-3">
@@ -54,7 +50,7 @@
                                         <li><a href="#">{{ writer }}<i class="lnr lnr-user"></i></a></li>
                                         <li><a href="#">{{ date }}<i class="lnr lnr-calendar-full"></i></a></li>
                                         <li><a href="#">{{ view }}<i class="lnr lnr-eye"></i></a></li>
-                                        <li><a href="#">{{ len(magazine['magazineContent']) }} comment<i class="lnr lnr-bubble"></i></a></li>
+                                        <li><a href="#">{{ len(magazineContents) }} comment<i class="lnr lnr-bubble"></i></a></li>
 
                                     </ul>
                                 </div>
@@ -82,7 +78,7 @@
                                         </span>
                                     </a>
                                 </li>
-                                {% for idx in range(1, ceil(len(magazine['magazineLink'])/5)+1) %}
+                                {% for idx in range(1, ceil(len(magazineLinks)/5)+1) %}
                                     {% if idx == pageNumber %}
                                     <li class="page-item active"><a href="#" class="page-link"> {{idx}} </a></li>
                                     {% else %}
@@ -120,9 +116,10 @@
                             <h4>Charlie Barber</h4>
                             <p>Senior magazine writer</p>
                             <div class="social_icon">
-                                {% for c in ['fa fa-facebook', 'fa fa-twitter', 'fa fa-github', 'fa fa-behance']%}
-                                <a href="#"><i class="{{ c }}"></i></a>
-                                {% endfor %}
+                                <a href="#"><i class="fa fa-facebook"></i></a>
+                                <a href="#"><i class="fa fa-twitter"></i></a>
+                                <a href="#"><i class="fa fa-github"></i></a>
+                                <a href="#"><i class="fa fa-behance"></i></a>
                             </div>
                             <p>Boot camps have its supporters andit sdetractors. Some people do not understand why you should have to spend money on boot camp when you can get. Boot camps have itssuppor ters andits detractors.</p>
                             <div class="br"></div>
@@ -131,9 +128,9 @@
                         <aside class="single_sidebar_widget popular_post_widget">
                             <h3 class="widget_title">Popular Posts</h3>
 
-                            {% for idx, (title, link, date) in enumerate(zip(magazine['magazineTitle'][:3],  magazine['magazineLink'][:3], magazine['magazineDate'][:3]))%}
+                            {% for idx, (title, link, date) in enumerate(zip(postTitles,  postLinks, postDates))%}
                             <div class="media post_item">
-                                <img src="{{ config.ASSETS_ROOT }}/image/blog/post{{idx+1}}.jpg" alt="post">
+                                <img src="{{ config.ASSETS_ROOT }}/image/blog/post{{idx}}.jpg" alt="post">
                                 <div class="media-body">
                                     <a href="blog-details.html"><h3>{{ title }}</h3></a>
                                     <p>{{nowDate - date}}</p>
@@ -151,11 +148,11 @@
                             <h4 class="widget_title">Post Catgories</h4>
                             <ul class="list_style cat-list">
 
-                                {% for thema, subject in zip(contentsThema, contentSubjects) %}
+                                {% for cnt, subject in zip(contentCounts, contentSubjects) %}
                                 <li>
                                     <a href="#" class="d-flex justify-content-between">
                                         <p>{{ subject }}</p>
-                                        <p>{{ thema }}</p>
+                                        <p>{{ cnt }}</p>
                                     </a>
                                 </li>
                                 {% endfor %}														

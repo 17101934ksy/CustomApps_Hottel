@@ -69,10 +69,10 @@ def view_about():
 @blueprint.route('/magazine/<page_number>')
 def view_magazine(page_number):
 
-    ids, themas, writers, dates, views, titles, subtitles, contents, links, tags, images = fetch_magazines(8)
+    magazine = fetch_magazines(8)
     contents_subject = ["여행", "미식", "숙소"]
     contents_thema = [0] * 3
-    for thema in themas:
+    for thema in magazine['magazineThema']:
         if thema == contents_subject[0]:
             contents_thema[0] += 1
         elif thema == contents_subject[1]:
@@ -80,16 +80,23 @@ def view_magazine(page_number):
         elif thema == contents_subject[2]:
             contents_thema[2] += 1
 
-    for idx, tag in enumerate(tags):
-        tags[idx] = tag.split('#')
-          
-    return render_template('home/magazine.html', templateName='magazine', blogWriters=writers, blogDates=dates, blogViews=views, blogComments=contents, \
-        blogTitles=titles, blogContents=contents, blogLinks=links, blogImages=images, blogTags=tags, blogThemas=themas, pageNumber=page_number, postTitles=titles,  postLinks=links, \
-        contentCounts=contents_thema , contentSubjects=contents_subject, nowDate=datetime.datetime.now(), zip=zip, enumerate=enumerate, len=len, ceil=math.ceil, int=int)
+    for idx, tag in enumerate(magazine['magazineTag']):
+        magazine['magazineTag'][idx] = tag.split('#')
 
-@blueprint.route('/magazine-single')
-def view_magazine_single():
-    return render_template('home/magazine-single.html', templateName='magazine-single')
+    
+    # return render_template('home/magazine.html', templateName='magazine', magazine=magazine, magazineIds=ids, magazineWriters=writers, magazineDates=dates, magazineViews=views, magazineComments=contents, \
+    #     magazineTitles=titles, magazineContents=contents, magazineLinks=links, magazineImages=images, magazineTags=tags, magazineThemas=themas, pageNumber=page_number, postTitles=titles,  postLinks=links, \
+    #     contentCounts=contents_thema , contentSubjects=contents_subject, nowDate=datetime.datetime.now(), zip=zip, enumerate=enumerate, len=len, ceil=math.ceil, int=int)
+
+    print(magazine['userId'][0])
+    return render_template('home/magazine.html', templateName='magazine', magazine=magazine, pageNumber=page_number, \
+        contentsSubject=contents_subject, contentsThema=contents_thema, nowDate=datetime.datetime.now(), zip=zip, enumerate=enumerate, len=len, ceil=math.ceil, int=int)
+    
+# @blueprint.route('/magazine-detail/<magazine_id>')
+# def view_magazine_detail(magazine_id, magazine_writer, magazine_date, magazine_view, magazine_comment, magazine_title, magazine_content, magazine_link, \
+#     magazine_image, magazine_tag, magazine_thema):
+
+#     return render_template('home/magazine-single.html', templateName='magazine-single')
 
 @blueprint.route('/contact')
 def view_contact():

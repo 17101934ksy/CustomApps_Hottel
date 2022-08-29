@@ -33,15 +33,14 @@ def fetch_testimonials(number):
 def fetch_magazines(number):
 
     magazines = Magazines.query.order_by(Magazines.magazineView.desc()).limit(number).all()
-    ids, themas, writers, dates, views, titles, subtitles, contents, links, tags, images = [], [], [], [], [], [], [], [], [], [], []
+
+    magazine_data = {}
+    
+    for key in magazines[0].__dict__.keys():
+        magazine_data[key] = []
 
     for magazine in magazines:
-        for lists, db_column in zip([ids, themas, writers, dates, views, titles, subtitles, contents, links, tags, images], \
-            [magazine.userId, magazine.magazineThema, magazine.magazineWriter, \
-                magazine.magazineDate, magazine.magazineView, magazine.magazineTitle, \
-                    magazine.magazineSubTitle, magazine.magazineContent, magazine.magazineLink, \
-                        magazine.magazineTag, magazine.magazineImage]):
-        
-            lists.append(db_column)
-
-    return ids, themas, writers, dates, views, titles, subtitles, contents, links, tags, images
+        for key, value in zip([magazine_data[k] for k in magazine_data.keys()], magazine.__dict__.values()):
+            key.append(value)
+            
+    return magazine_data

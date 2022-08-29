@@ -103,9 +103,19 @@ def test_magazine():
     # print(len(magazines_tag))
 
 
+class TestData():
+
+    def __init__(self):
+        self.a = '10'
+        self.b = '12'
+
 if __name__ == "__main__":
     # t = testjson()
     # print(t)
     # print(type(t))
 
-    test = test_magazine()
+    # test = test_magazine()
+
+    test = TestData()
+
+    print(test.__dict__.values())
