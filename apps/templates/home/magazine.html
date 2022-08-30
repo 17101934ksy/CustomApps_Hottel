@@ -29,6 +29,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8">
+                    <div><a href="{{ url_for('home_blueprint.view_magazine_write', user_id=userId) }}"> 글쓰기 </a></div>
                     <div class="blog_left_sidebar">
                         
                         {% for idx, (id, writer, date, view, title, content, magazine_link, tag, image) in enumerate(zip(magazine['userId'], magazine['magazineWriter'], 
@@ -37,6 +38,7 @@
                         magazine['magazineTag'], magazine['magazineImage'])) %}
 
                         {% if ceil(idx / 5) == int(pageNumber) %}
+
                         <article class="row blog_item">
                            <div class="col-md-3">
                                <div class="blog_info text-right">

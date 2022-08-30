@@ -57,18 +57,16 @@
             </button>
         </div>
         <div class="modal-body">
-            <form method="post" class="post-form">
+            <form role="form" method="post" class="post-form">
                 {{ form.csrf_token }}
                 <div class="form-group">
-                    <label for="username">아이디</label>
-                    <input type="text" class="form-control" name="username" id="login_username">
+                    {{ form.userName(placeholder="Username", class="form-control") }}
                 </div>
                 <div class="form-group">
-                    <label for="password">비밀번호</label>
-                    <input type="password" class="form-control" name="password" id="login_password">
+                    {{ form.password(placeholder="Password", class="form-control", type="password") }}
                 </div>
                 <div class="modal-footer justify-content-center">
-                    <button type="submit" class="btn btn-outline-warning waves-effect" id="login_button"> 로그인 </button>
+                    <button type="submit" name="login" class="btn btn-outline-warning waves-effect" id="login_button"> 로그인 </button>
                 </div>
             </form>
         </div>
@@ -197,54 +195,6 @@
     <script src="{{ config.ASSETS_ROOT }}/js/custom.js"></script>
     <script>
         $(document).ready(function(){  
-            
-            $('#login_button').click(function(){  
-                var username = $('#login_username').val();  
-                var password = $('#login_password').val();  
-
-                if(username != '' && password != ''){  
-                    var dataJson = {
-                        "username": username,
-                        "password": password
-                    }
-
-                    $.ajax({
-                        type: 'POST',
-                        url: 'check_login',
-                        async: false,
-                        dataType: 'json',
-                        contentType: 'application/json',
-                        data: JSON.stringify(dataJson),
-                        success: function(response) {
-                            console.log('login success');
-                            if (response["result"] == "success"){
-                            $.ajax({
-                                type:'POST',
-                                url: 'login',
-                                async: true,
-                                datatype: 'html',
-                                contentType: "application/json; charset=utf-8",
-                                data: JSON.stringify({"result":"success"}),
-                                success: function(response){
-                                    console.log('index');
-                                    let url = 'index';
-                                    location.replace(url);
-                                    }
-                                }
-                            )
-                            }
-                            else{
-                                console.log('login fail')    
-                            }
-                        }
-                    })
-                }
-                else
-                {  
-                    alert("Both Fields are required");  
-                }  
-            }); 
-
             $('#register_button').click(function(){  
                 var username = $('#register_username').val();  
                 var password = $('#register_password').val();  
@@ -277,7 +227,10 @@
                 }  
             }); 
         });  
+        
     </script>
+
+
 
 {% endblock javascripts %}
 

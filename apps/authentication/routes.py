@@ -1,10 +1,5 @@
 from flask import render_template, request, redirect, url_for, session, jsonify
-
-from flask_login import (
-    current_user,
-    login_user,
-    logout_user
-)
+from flask_login import current_user, login_user, logout_user, login_required
 
 from apps import db, login_manager
 from apps.authentication import blueprint
@@ -12,40 +7,34 @@ from apps.authentication.forms import SiteLoginForm, CreateAccountForm
 from apps.authentication.models import Magazines, Testimonials, Users, BusinessRegisters, BusinessLists, Accomodations
 from apps.authentication.util import verify_pass, crawler_db
 
-
-
 @blueprint.route('/')
 def route_default():
     return redirect(url_for('authentication_blueprint.login'))
 
 @blueprint.route('/login', methods=['GET', 'POST'])
 def login():
-    login_form = SiteLoginForm()
-    return render_template('accounts/login.html', form=login_form)
-
-@blueprint.route('/check_login', methods=['GET', 'POST'])
-def check_login():
     error = None
+    login_form = SiteLoginForm(request.form)
 
-    if request.method == 'POST':
-        data = request.get_json()
+    if 'login' in request.form:
 
-        user = Users.query.filter_by(userName=data['username']).first()
+        username = request.form['userName']
+        password = request.form['password']
+        user = Users.query.filter_by(userName=username).first()
 
         if not user:
             error = "입력하신 정보가 올바르지 않습니다."
 
-        elif not verify_pass(data['password'], user.password):
+        elif not verify_pass(password, user.password):
             error = '입력하신 정보가 올바르지 않습니다.'
 
         if error is None:
             session.clear()
-            session['user_id']=user.userId
-            print('success')
-            return jsonify({"result":"success"})
+            session['user_id']=user.userId       
+            login_user(user)
+            return redirect(url_for('home_blueprint.index'))
 
-    return jsonify({"result":"fail"})
-
+    return render_template('accounts/login.html', form=login_form, error=error)
 
 @blueprint.route('/register', methods=['GET', 'POST'])
 def register():
@@ -109,6 +98,7 @@ def internal_error():
 # Simulation
 
 @blueprint.route('/simulate_database', methods=['GET', 'POST'])
+@login_required
 def simulate_database():
 
     if str(session['user_id']) == '1':  
@@ -170,6 +160,7 @@ def simulate_database():
 
             db.session.add(magazine)
             db.session.commit()
+
 
         return str("session clear")
     return str("session fail")

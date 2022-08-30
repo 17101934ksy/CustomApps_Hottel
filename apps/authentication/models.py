@@ -1,4 +1,3 @@
-from typing import Text
 from flask_login import UserMixin
 from apps import db, login_manager
 from apps.authentication.util import hash_pass
@@ -22,6 +21,9 @@ class Users(db.Model, UserMixin):
             if property == 'password':
                 value = hash_pass(value)
             setattr(self, property, value)
+
+    def get_id(self):
+        return (self.userId)
 
     def __repr__(self):
         self.info = {
@@ -227,6 +229,28 @@ class Points(db.Model):
         }
         return str(self.info) 
 
+class ReviewComments(db.Model):
+
+    __tablename__ = 'ReviewComments'
+
+    reviewId = Column(Integer, ForeignKey('Reviews.reviewId'), primary_key=True)
+    commentSeq = Column(Integer, primary_key=True, autoincrement=True)
+    userId = Column(Integer, ForeignKey('Users.userId'))
+    commentContent = Column(TEXT, nullable=False)
+
+    reviews = db.relationship('Reviews', backref='ReviewComments')
+    users = db.relationship('Users', backref='ReviewComments')
+
+    def __repr__(self):
+        self.info = {
+            "reviewId": self.userId,
+            "commentSeq": self.commentSeq,
+            "userId": self.userId,
+            "commentContent": self.commentContent
+        }
+        return str(self.info) 
+    
+
 class Magazines(db.Model):
 
     __tablename__ = 'Magazines'
@@ -263,32 +287,31 @@ class Magazines(db.Model):
         }
         return str(self.info) 
 
-class Comments(db.Model):
+class MagazineComments(db.Model):
 
-    __tablename__ = 'Comments'
+    __tablename__ = 'MagazineComments'
 
     commentSeq = Column(Integer, primary_key=True, autoincrement=True)
     magazineSeq = Column(Integer, ForeignKey('Magazines.magazineSeq'))
     userId = Column(Integer, ForeignKey('Users.userId'))
     magazineComment = Column(TEXT)
 
-    users = db.relationship('Users', backref='Comments')
-    magazines = db.relationship('Magazines', backref='Comments')
+    users = db.relationship('Users', backref='MagazineComments')
+    magazines = db.relationship('Magazines', backref='MagazineComments')
     
     def __repr__(self):
-            self.info = {
+        self.info = {
                 "commentSeq": self.commentSeq,
                 "magazineSeq": self.magazineSeq,
                 "userId": self.userId,
                 "magazineComment": self.magazineComment
             }
-            return str(self.info) 
+        return str(self.info)
 
-
-
+ 
 @login_manager.user_loader
 def user_loader(userId):
-    return Users.query.filter_by(useId=userId).first()
+    return Users.query.filter_by(userId=userId).first()
 
 
 @login_manager.request_loader

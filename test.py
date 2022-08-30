@@ -103,6 +103,19 @@ def test_magazine():
     # print(len(magazines_tag))
 
 
+
+def test(*args):
+
+    testclass = {
+        "test": 0,
+        "trr": 0
+    }
+
+    testclass['test'] = args[0]
+    testclass['trr'] = args[1]
+
+    print(testclass)
+
 class TestData():
 
     def __init__(self):
@@ -116,6 +129,8 @@ if __name__ == "__main__":
 
     # test = test_magazine()
 
-    test = TestData()
+    # test = TestData()
 
-    print(test.__dict__.values())
+    # print(test.__dict__.values())
+
+    test('122', '32')
