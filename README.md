@@ -140,9 +140,11 @@ $ flask run
    |    |    |-- routes.py                  # routes for authentication 
    |    |    |-- models.py                  # database
    |    |    |-- forms.py                   # form
-   |    |    |-- fetch.py                   # fetch from database
+   |    |    |-- fetchs.py                  # fetch from database
    |    |    |-- util.py                    # function for utils 
    |    |
+   |    |-- info/
+   |    |    |-- ERD_system.png             # ERD_system 관계도
    |    |-- static/
    |    |    |-- <css, JS, images>          # static
    |    |
