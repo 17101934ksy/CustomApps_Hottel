@@ -36,16 +36,16 @@
                             <form role="form" method="post" class="post-form" enctype="multipart/form-data">
                                 <div class="form-group form-inline">
                                   <div class="form-group col-lg-8 col-md-8">
-                                    <input type="text" name="title" value="" id="magazine-title" style="border: 3px solid #ccc;" placeholder="제목을 입력하세요">
+                                    <input type="text" name="title" value="" id="magazine-title" style="border: 3px solid #ccc;" placeholder="제목을 입력하세요" required>
                                   </div>
                                   <br><br/>
                                   <div class="form-group col-lg-8 col-md-8">
-                                    {% for thema in ["여행", "미식", "숙소"] %}
-                                    <label><input type="radio" name="themaName" value="{{ thema }}" style="border: 3px solid #ccc;"> {{ thema }} &nbsp;&nbsp;</label>
-                                    {% endfor %}
+                                    <label><input type="radio" name="themaName" value="여행" style="border: 3px solid #ccc;" checked> 여행 &nbsp;&nbsp;</label>
+                                    <label><input type="radio" name="themaName" value="미식" style="border: 3px solid #ccc;"> 미식 &nbsp;&nbsp;</label>
+                                    <label><input type="radio" name="themaName" value="숙소" style="border: 3px solid #ccc;"> 숙소 &nbsp;&nbsp;</label>
                                   </div>										
                                 </div>
-                                <div class="form-group" contenteditable="true" value="" name="content" id="magazine-content" style="border: 3px solid #ccc; min-height: 30em">
+                                <div class="form-group" contenteditable="true" value="" name="content" id="magazine-content" style="border: 3px solid #ccc; min-height: 30em" required>
                                 </div>
                                 <div class="form-group">
                                     <input type="file" accept="image/*" name="file" value="" style="border: 3px solid #ccc;" id="magazine-file" >
@@ -91,7 +91,6 @@
                 var magazineTitle = $('#magazine-title').val();  
                 var magazineThema = $("input[name='themaName']:checked").val(); 
                 var magazineContent = $("#magazine-content").html();
-                var magazineImage = $('#magazine-file').val();
                 var magazineTag = $('#magazine-tag').val();
 
                 if(magazineTitle != '' && magazineContent != ''){ 
@@ -99,7 +98,6 @@
                         "magazineTitle": magazineTitle,
                         "magazineThema": magazineThema,
                         "magazineContent": magazineContent,
-                        "magazineImage": magazineImage,
                         "magazineTag": magazineTag
                     } 
                     $.ajax({
@@ -113,10 +111,50 @@
                             console.log('register success')
                         }
                     })
+                    
+                    const magazineImage = $("#magazine-file")[0];
+                    // 파일을 여러개 선택할 수 있으므로 files 라는 객체에 담긴다.
+                    console.log("magazineImage: ", magazineImage.files)
+
+                    if(magazineImage.files.length === 0){
+                        $.ajax({
+                            type:"POST",
+                            url: "{{ url_for('home_blueprint.upload_no_files', magazine_seq=magazineSeq) }}",
+                            dataType: 'json',
+                            contentType: 'application/json',
+                            contentType: false,
+                            data: {"file": "none"},
+                            success: function(response){
+                                console.log(response['result'])
+                            },
+                            err: function(err){
+                                console.log('Error')
+                                    }
+                        })
+                    }
+                    else {
+                        const formData = new FormData();
+                        formData.append("image", magazineImage.files[0]);
+
+                        $.ajax({
+                            type:"POST",
+                            url: "{{ url_for('home_blueprint.upload_files', magazine_seq=magazineSeq) }}",
+                            processData: false,
+                            contentType: false,
+                            data: formData,
+                            success: function(response){
+                                console.log(response['result'])
+                            },
+                            err: function(err){
+                                console.log('Error')
+                                    }
+                        })
+                    }
                 }
                 else {  
-                    alert("Both Fields are required");  
-                }  
+                    alert("Both Fields are required");
+                    document.getElementById("form").reset(); 
+                    }  
             }); 
         });  
         

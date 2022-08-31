@@ -4,8 +4,9 @@ from apps.home import blueprint
 from flask import render_template, request, session, jsonify
 from flask_login import login_required
 from jinja2 import TemplateNotFound, TemplateAssertionError
+from werkzeug.utils import secure_filename
 
-import datetime, math
+import datetime, math, os, shutil
 
 @blueprint.route('/<template>')
 def route_template(template):
@@ -89,15 +90,52 @@ def view_magazine_detail(magazine_id, magazine_writer, magazine_date, magazine_v
 @login_required
 def view_magazine_write(user_id):
 
+    magazine_data = fetch_magazines(1)
+
+    magazine_seq = int(magazine_data['magazineSeq'][0]) + 1
+
     if request.method == 'POST':
         data = request.get_json()
 
         print(data)
-        
+
         return jsonify({"result":"success"})
 
     return render_template('home/magazine-write.html', templateName='magazine-write', \
-        userId=user_id, nowDate=datetime.datetime.now(), zip=zip, enumerate=enumerate)
+        userId=user_id, magazineSeq=magazine_seq, nowDate=datetime.datetime.now(), zip=zip, enumerate=enumerate)
+
+
+@blueprint.route('/uploads/magazines/<magazine_seq>', methods = ['GET', 'POST'])
+def upload_files(magazine_seq):
+
+    if request.method == 'POST':
+        f = request.files['image']
+      
+        path = "./apps/static/image/magazines/" + str(magazine_seq)
+        os.mkdir(path)
+        f.save(path + "/" + secure_filename(f.filename))
+        
+        print({"result": "success"})
+
+        return jsonify({"result": "success"})
+    return jsonify({"result": "fail"})
+
+@blueprint.route('/uploads/none/magazines/<magazine_seq>', methods = ['GET', 'POST'])
+def upload_no_files(magazine_seq):
+
+    if request.method == 'POST':
+
+        print("test")
+      
+        path = "./apps/static/image/magazines/" 
+        os.mkdir(path + str(magazine_seq))
+        shutil.copyfile(path + "noimg.jpg", path + str(magazine_seq) +'/noimg.jpg')
+      
+        print({"result": "success"})
+
+        return jsonify({"result": "success"})
+
+    return jsonify({"result": "fail"})
 
 
 @blueprint.route('/contact')

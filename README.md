@@ -123,6 +123,11 @@ $ flask run
 `Rooms`: 숙박시설의 다양한 방<br />
 `Carts`: 이용객의 장바구니<br />
 `Reservations`: 예약 상황<br />
+`Reviews`: 방에 대한 리뷰<br />
+`Points`: 댓글에 대한 포인트<br />
+`ReviewComments`: 리뷰 코멘<br />
+`Magazines`: 여행 매거진<br />
+`MagazineComments`: 여행 코멘트<br />
 
 <img src = "https://user-images.githubusercontent.com/88478829/186169072-e3fb93f0-7d6e-4fe7-8096-e86ee0602267.png" width="width 50%" height="height 50%">
 
