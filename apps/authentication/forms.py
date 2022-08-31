@@ -26,17 +26,3 @@ class CreateAccountForm(FlaskForm):
                             id='phone_num',
                             validators=[DataRequired()])
 
-class MagazineWriteForm(FlaskForm):
-    title = StringField('제목',
-                        id='title',
-                        validators=[DataRequired(), Length(min=1, max=70)])
-    thema = RadioField('테마', 
-                        id='thema',
-                        choices=['여행', '미식', '숙소'])
-    content = TextAreaField('내용',
-                            id='content',
-                            validators=[DataRequired(), Length(min=1, max=7000)])
-    image = MultipleFileField('이미지',
-                        id='image')
-    hashtag = StringField('해시태그',
-                        id='hashtag')

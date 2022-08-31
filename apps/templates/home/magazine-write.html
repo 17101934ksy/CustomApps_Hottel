@@ -15,10 +15,6 @@
     <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/css/responsive.css">
 
 
-    .flex-container {
-        display: flex;
-      }
-
 {% endblock stylesheets %}
 
 {% block content %}
@@ -35,27 +31,29 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="blog_left_sidebar">
-                        <div class="comment-form">
+                        <div class="comment-form" style="border: 3px solid #ccc;">
                             <h4>매거진 글 작성</h4>
                             <form role="form" method="post" class="post-form" enctype="multipart/form-data">
                                 <div class="form-group form-inline">
                                   <div class="form-group col-lg-8 col-md-8">
-                                    <input type="text" name="title" value="제목을 입력하세요." style="border: none;">
+                                    <input type="text" name="title" value="" id="magazine-title" style="border: 3px solid #ccc;" placeholder="제목을 입력하세요">
                                   </div>
                                   <br><br/>
                                   <div class="form-group col-lg-8 col-md-8">
                                     {% for thema in ["여행", "미식", "숙소"] %}
-                                    <label><input type="radio" name="thema" value="{{ thema }}" > {{ thema }} &nbsp;&nbsp;</label>
+                                    <label><input type="radio" name="themaName" value="{{ thema }}" style="border: 3px solid #ccc;"> {{ thema }} &nbsp;&nbsp;</label>
                                     {% endfor %}
                                   </div>										
                                 </div>
-                                <div class="form-group" contenteditable="true" style="height: 30em; border-color: black; border-width: 1px;">
-                                    내용을 입력하세요.
+                                <div class="form-group" contenteditable="true" value="" name="content" id="magazine-content" style="border: 3px solid #ccc; min-height: 30em">
                                 </div>
                                 <div class="form-group">
-                                    <input type="text" name="hashtag" value="해시태그를 입력하세요." style="border: none;">
+                                    <input type="file" accept="image/*" name="file" value="" style="border: 3px solid #ccc;" id="magazine-file" >
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" name="tag" value="" style="border: 3px solid #ccc;" id="magazine-tag" placeholder="해시태그를 입력하세요">
                                 </div>                                  
-                                <button type="submit" name="magazine" class="btn btn-outline-warning waves-effect" id="magazine_button"> 등록하기</button>
+                                <button type="submit" name="magazine" class="btn btn-outline-warning waves-effect" id="magazine-button"> 등록하기</button>
                             </form>
                         </div>
                     </div>
@@ -87,8 +85,43 @@
     <script src="{{ config.ASSETS_ROOT }}/js/custom.js"></script>
 
     <script>
-    
+
+        $(document).ready(function(){  
+            $('#magazine-button').click(function(){  
+                var magazineTitle = $('#magazine-title').val();  
+                var magazineThema = $("input[name='themaName']:checked").val(); 
+                var magazineContent = $("#magazine-content").html();
+                var magazineImage = $('#magazine-file').val();
+                var magazineTag = $('#magazine-tag').val();
+
+                if(magazineTitle != '' && magazineContent != ''){ 
+                    var dataJson = {
+                        "magazineTitle": magazineTitle,
+                        "magazineThema": magazineThema,
+                        "magazineContent": magazineContent,
+                        "magazineImage": magazineImage,
+                        "magazineTag": magazineTag
+                    } 
+                    $.ajax({
+                        type: 'POST',
+                        url: 'Write{{userId}}',
+                        async: false,
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        data: JSON.stringify(dataJson),
+                        success: function(response) {
+                            console.log('register success')
+                        }
+                    })
+                }
+                else {  
+                    alert("Both Fields are required");  
+                }  
+            }); 
+        });  
+        
     </script>
+
 
 {% endblock javascripts %}
 

@@ -1,13 +1,11 @@
 from apps.authentication.fetchs import fetch_accomodations, fetch_testimonials, fetch_magazines
+from apps.authentication.models import Magazines
 from apps.home import blueprint
-from apps.authentication.forms import MagazineWriteForm
-
-from flask import render_template, request, session
+from flask import render_template, request, session, jsonify
 from flask_login import login_required
-
 from jinja2 import TemplateNotFound, TemplateAssertionError
-import datetime
-import math
+
+import datetime, math
 
 @blueprint.route('/<template>')
 def route_template(template):
@@ -35,6 +33,7 @@ def get_segment(request):
     except:
         return None
 
+
 @blueprint.route('/index')
 def index():
     ids, names, images, prices = fetch_accomodations(20)
@@ -42,16 +41,19 @@ def index():
     return render_template('home/index.html', accomodationId=ids, accomodationName=names, accomodationImage=images, \
         accomodationPrice=prices, userId=uids, userName=unames, testimonialComment=comments, zip=zip, enumerate=enumerate) 
 
+
 @blueprint.route('/accomodation')
 def view_accomodation():
     ids, names, images, prices = fetch_accomodations(20)
     return render_template('home/accomodation.html', templateName='accomodation', accomodationId=ids, accomodationName=names, accomodationImage=images, accomodationPrice=prices, \
         zip=zip, enumerate=enumerate)    
 
+
 @blueprint.route('/about')
 def view_about():
     uids, unames, comments = fetch_testimonials(8)
     return render_template('home/about.html', templateName='about', userId=uids, userName=unames, testimonialComment=comments, zip=zip)
+
 
 @blueprint.route('/magazine/<page_number>')
 @login_required
@@ -74,6 +76,7 @@ def view_magazine(page_number):
     return render_template('home/magazine.html', templateName='magazine', magazine=magazine, pageNumber=page_number, userId=session['user_id'],\
         contentsSubject=contents_subject, contentsThema=contents_thema, nowDate=datetime.datetime.now(), zip=zip, enumerate=enumerate, len=len, ceil=math.ceil, int=int)
     
+
 @blueprint.route('/magazine-detail/<magazine_id>')
 def view_magazine_detail(magazine_id, magazine_writer, magazine_date, magazine_view, magazine_comment, magazine_title, magazine_content, magazine_link, \
     magazine_image, magazine_tag, magazine_thema):
@@ -81,19 +84,19 @@ def view_magazine_detail(magazine_id, magazine_writer, magazine_date, magazine_v
     return render_template('home/magazine-detail.html', templateName='magazine-detail', \
         nowDate=datetime.datetime.now(), zip=zip, enumerate=enumerate, len=len, ceil=math.ceil, int=int)
 
+
 @blueprint.route('/magazine-write/Write<user_id>', methods=['GET', 'POST'])
 @login_required
 def view_magazine_write(user_id):
-    write_form = MagazineWriteForm(request.form)
 
-    if 'magazine' in request.form:
+    if request.method == 'POST':
+        data = request.get_json()
 
-        id, writer, date, view, comment, title, content, link, image, tag, thema = [None] * 11
+        print(data)
+        
+        return jsonify({"result":"success"})
 
-
-        return "hello request"
-
-    return render_template('home/magazine-write.html', templateName='magazine-form', form=write_form, \
+    return render_template('home/magazine-write.html', templateName='magazine-write', \
         userId=user_id, nowDate=datetime.datetime.now(), zip=zip, enumerate=enumerate)
 
 
