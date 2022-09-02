@@ -34,9 +34,10 @@
                         <div class="comment-form" style="border: 3px solid #ccc;">
                             <h4>매거진 글 작성</h4>
                             <form role="form" method="post" class="post-form" enctype="multipart/form-data">
+                                {{ form.csrf_token }}
                                 <div class="form-group form-inline">
                                   <div class="form-group col-lg-8 col-md-8">
-                                    <input type="text" name="title" value="" id="magazine-title" style="border: 3px solid #ccc;" placeholder="제목을 입력하세요" required>
+                                    {{ form.visibleTitle(style="border: 3px solid #ccc;", placeholder="제목을 입력해주세요") }}
                                   </div>
                                   <br><br/>
                                   <div class="form-group col-lg-8 col-md-8">
@@ -48,12 +49,14 @@
                                 <div class="form-group" contenteditable="true" value="" name="content" id="magazine-content" style="border: 3px solid #ccc; min-height: 30em" required>
                                 </div>
                                 <div class="form-group">
-                                    <input type="file" accept="image/*" name="file" value="" style="border: 3px solid #ccc;" id="magazine-file" >
+                                    {{ form.visibleFile(style="border: 3px solid #ccc;", accept="image/*") }}
                                 </div>
                                 <div class="form-group">
-                                    <input type="text" name="tag" value="" style="border: 3px solid #ccc;" id="magazine-tag" placeholder="해시태그를 입력하세요">
-                                </div>                                  
-                                <button type="submit" name="magazine" class="btn btn-outline-warning waves-effect" id="magazine-button"> 등록하기</button>
+                                    {{ form.visibleTag(style="border: 3px solid #ccc;", placeholder="해시태그를 입력하세요") }}
+                                </div>   
+                                {{ form.hiddenThema(class="form-copy") }}
+                                {{ form.hiddenContent(class="form-copy") }}                               
+                                <button type="submit" name="magazine" class="btn btn-outline-warning waves-effect" id="magazine-button" onclick="copy_form()"> 등록하기</button>
                             </form>
                         </div>
                     </div>
@@ -86,73 +89,19 @@
 
     <script>
 
-        $(document).ready(function(){  
-            $('#magazine-button').click(function(){  
-                var magazineTitle = $('#magazine-title').val();  
-                var magazineThema = $("input[name='themaName']:checked").val(); 
+        function copy_form(){
+                alert("test content copy")
+
+                var magazineThema = $("input[name='themaName']:checked").val();
                 var magazineContent = $("#magazine-content").html();
-                var magazineTag = $('#magazine-tag').val();
 
-                if(magazineTitle != '' && magazineContent != ''){ 
-                    var dataJson = {
-                        "magazineTitle": magazineTitle,
-                        "magazineThema": magazineThema,
-                        "magazineContent": magazineContent,
-                        "magazineTag": magazineTag
-                    } 
-                    $.ajax({
-                        type: 'POST',
-                        url: 'Write{{userId}}',
-                        async: false,
-                        dataType: 'json',
-                        contentType: 'application/json',
-                        data: JSON.stringify(dataJson),
-                        success: function(response){
-                                alert("test1")
-                            }
-                    })
-                    
-                    const magazineImage = $("#magazine-file")[0];
-                    console.log("magazineImage: ", magazineImage.files)
+                var hiddenThema = document.getElementById('hidden-thema');
+                var hiddenContent = document.getElementById('hidden-content');
 
-                    if(magazineImage.files.length === 0){
-                        $.ajax({
-                            type:"POST",
-                            url: "{{ url_for('home_blueprint.upload_no_files', magazine_seq=magazineSeq) }}",
-                            async: false,
-                            dataType: 'json',
-                            contentType: 'application/json',
-                            data: {"file": "none"},
-                            success: function(response){
-                                alert("test2")
-                            }
-                        })}
+                hiddenThema.setAttribute('value', magazineThema);
+                hiddenContent.setAttribute('value', magazineContent);
+            }
 
-                    else {
-                        const formData = new FormData();
-                        formData.append("image", magazineImage.files[0]);
-
-                        $.ajax({
-                            type:"POST",
-                            url: "{{ url_for('home_blueprint.upload_files', magazine_seq=magazineSeq) }}",
-                            async: false,
-                            processData: false,
-                            contentType: false,
-                            data: formData,
-                            success: function(response){
-                                if (response['result'] == 'success'){
-                                    alert('upload success');
-                                    window.location.assign = "{{ url_for('home_blueprint.view_magazine', page_number=1) }}";
-                                }
-                            }})
-                        }
-                    }
-                else {  
-                    alert("Both Fields are required");
-                    }  
-            }); 
-        });  
-        
     </script>
 
 

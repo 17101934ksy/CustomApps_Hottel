@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, IntegerField, FloatField, RadioField, TextAreaField, MultipleFileField
+from wtforms import StringField, PasswordField, IntegerField, FloatField, RadioField, TextAreaField, HiddenField
 from wtforms.validators import Email, DataRequired, Length, EqualTo
+from flask_wtf.file import FileField, FileAllowed
 
 class SiteLoginForm(FlaskForm):
     userName = StringField('아이디',
@@ -25,4 +26,19 @@ class CreateAccountForm(FlaskForm):
     phoneNumber = IntegerField('전화번호',
                             id='phone_num',
                             validators=[DataRequired()])
+
+class MagazineForm(FlaskForm):
+    visibleTitle = StringField('제목',
+                            id='visible-title',
+                            validators=[DataRequired("제목을 입력하세요!"), Length(min=2, max=100)])
+    hiddenThema = HiddenField('테마',
+                            id='hidden-thema')
+    hiddenContent = HiddenField('내용',
+                            id='hidden-content')
+    visibleTag =  StringField('해시태그',
+                            id='visible-tag')
+    visibleFile = FileField('파일',
+                            id='visible-file',
+                            validators=[FileAllowed(['jpg', 'png'], 'jpg, png 확장자만 가능합니다.')])
+
 

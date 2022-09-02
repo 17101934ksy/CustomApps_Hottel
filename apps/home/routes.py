@@ -5,6 +5,7 @@ from flask import render_template, request, session, jsonify, redirect, url_for
 from flask_login import login_required
 from jinja2 import TemplateNotFound, TemplateAssertionError
 from werkzeug.utils import secure_filename
+from apps.authentication.forms import MagazineForm
 
 import datetime, math, os, shutil
 
@@ -74,6 +75,7 @@ def view_magazine(page_number):
 
     for idx, tag in enumerate(magazine['magazineTag']):
         magazine['magazineTag'][idx] = tag.split('#')
+        
     
     return render_template('home/magazine.html', templateName='magazine', magazine=magazine, pageNumber=page_number, userId=session['user_id'],\
         contentsSubject=contents_subject, contentsThema=contents_thema, nowDate=datetime.datetime.now(), zip=zip, enumerate=enumerate, len=len, ceil=math.ceil, int=int)
@@ -95,61 +97,47 @@ def view_magazine_write(user_id):
 
     magazine_seq = int(magazine_data['magazineSeq'][0]) + 1
 
-    if request.method == 'POST':
-        print("success")
+    magazine_form = MagazineForm(request.form)
 
-    # elif request.method == 'GET':
-    #     data = request.data_json()
+    if 'magazine' in request.form:
+        if magazine_form.validate_on_submit():
 
-    #     if 'wirtesuccess' in data.keys():
+            magazine_title = request.form['visibleTitle']
+            magazine_thema = request.form['hiddenThema']
+            magazine_content = request.form['hiddenContent']
+            magazine_image = request.files['visibleFile']
+            magazine_tag = request.form['visibleTag']
+
+            if str(magazine_image.filename) == "":
+                path = "./apps/static/image/magazines/" 
+
+                if os.path.exists(path + str(magazine_seq)):
+                    shutil.rmtree(path + str(magazine_seq))
+            
+                os.mkdir(path + str(magazine_seq))
+                shutil.copyfile(path + "noimg.jpg", path + str(magazine_seq) +'/noimg.jpg')
+            
+            else:
+                path = "./apps/static/image/magazines/" + str(magazine_seq)
+
+                if os.path.exists(path):
+                    shutil.rmtree(path)
+                os.mkdir(path)
+                magazine_image.save(path + "/" + secure_filename(magazine_image.filename))
+
+            print("**** request ****")
+            print(magazine_title)
+            print(magazine_thema)
+            print(magazine_content)
+            print(magazine_image)
+            print(magazine_tag)
+            print("**** end ****")
+            
+            return redirect(url_for('home_blueprint.view_magazine', page_number=1))
 
     return render_template('home/magazine-write.html', templateName='magazine-write', \
-        userId=user_id, magazineSeq=magazine_seq, nowDate=datetime.datetime.now(), zip=zip, enumerate=enumerate)
-
-
-@blueprint.route('/uploads/magazines/<magazine_seq>', methods = ['GET', 'POST'])
-def upload_files(magazine_seq):
-
-    if request.method == 'POST':
-        f = request.files['image']
-      
-        path = "./apps/static/image/magazines/" + str(magazine_seq)
-
-        if os.path.exists(path):
-            print("before shutil")
-            shutil.rmtree(path)
-            print("after shutil")
-        os.mkdir(path)
-        f.save(path + "/" + secure_filename(f.filename))
-        print("after save")
-        
-        return jsonify({"result": "success"})
-    return jsonify({"result": "fail"})
-
-
-@blueprint.route('/uploads/none/magazines/<magazine_seq>', methods = ['GET', 'POST'])
-def upload_no_files(magazine_seq):
-
-    if request.method == 'POST':
-
-        print("test")
-      
-        path = "./apps/static/image/magazines/" 
-
-        if os.path.exists(path + str(magazine_seq)):
-            print("before shutil")
-            shutil.rmtree(path + str(magazine_seq))
-            print("after shutil")
-        
-        os.mkdir(path + str(magazine_seq))
-
-        shutil.copyfile(path + "noimg.jpg", path + str(magazine_seq) +'/noimg.jpg')
-      
-        print({"result": "success"})
-
-        return jsonify({"result": "success"})
-
-    return jsonify({"result": "fail"})
+        userId=user_id, magazineSeq=magazine_seq, nowDate=datetime.datetime.now(), zip=zip, enumerate=enumerate, \
+            form = magazine_form)
 
 
 @blueprint.route('/contact')
