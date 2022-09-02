@@ -1,11 +1,15 @@
+from apps import db
+from apps.home import blueprint
 from apps.authentication.fetchs import fetch_accomodations, fetch_testimonials, fetch_magazines
 from apps.authentication.models import Magazines
-from apps.home import blueprint
-from flask import render_template, request, session, jsonify, redirect, url_for
+from apps.authentication.forms import MagazineForm
+
+from flask import render_template, request, session, redirect, url_for
 from flask_login import login_required
+
 from jinja2 import TemplateNotFound, TemplateAssertionError
 from werkzeug.utils import secure_filename
-from apps.authentication.forms import MagazineForm
+
 
 import datetime, math, os, shutil
 
@@ -60,9 +64,7 @@ def view_about():
 @blueprint.route('/magazine/<page_number>', methods=['GET', 'POST'])
 def view_magazine(page_number):
 
-    print("rendering Test")
-
-    magazine = fetch_magazines(8)
+    magazine = fetch_magazines('all')
     contents_subject = ["여행", "미식", "숙소"]
     contents_thema = [0] * 3
     for thema in magazine['magazineThema']:
@@ -115,6 +117,8 @@ def view_magazine_write(user_id):
                     shutil.rmtree(path + str(magazine_seq))
             
                 os.mkdir(path + str(magazine_seq))
+                new_path = str(magazine_seq) + '/noimg.jpg'
+
                 shutil.copyfile(path + "noimg.jpg", path + str(magazine_seq) +'/noimg.jpg')
             
             else:
@@ -123,14 +127,21 @@ def view_magazine_write(user_id):
                 if os.path.exists(path):
                     shutil.rmtree(path)
                 os.mkdir(path)
+                new_path = str(magazine_seq) + "/" + secure_filename(magazine_image.filename)
                 magazine_image.save(path + "/" + secure_filename(magazine_image.filename))
 
+            new_path = '/static/image/magazines/' + new_path
             print("**** request ****")
-            print(magazine_title)
-            print(magazine_thema)
+
             print(magazine_content)
-            print(magazine_image)
-            print(magazine_tag)
+
+            magazine = Magazines(userId=user_id, magazineThema=magazine_thema, magazineWriter='Writer_'+f'{user_id}',
+            magazineDate=datetime.datetime.now(), magazineView=0, magazineTitle=magazine_title, magazineSubTitle='', magazineContent=magazine_content,
+            magazineLink=str(magazine_seq), magazineTag=magazine_tag, magazineImage=new_path)
+
+            db.session.add(magazine)
+            db.session.commit()
+
             print("**** end ****")
             
             return redirect(url_for('home_blueprint.view_magazine', page_number=1))

@@ -66,7 +66,7 @@
                                     <img src="{{ image }}" alt="">
                                     <div class="blog_details">
                                         <a href="{{ blog_link }}"><h2>{{ title }}</h2></a>
-                                        <p>{{ content }}</p>
+                                        <p class="hidden-html-tag">{{ content }}</p>
                                         <a href="{{ blog_link }}" class="view_btn button_hover">View More</a>
                                     </div>
                                 </div>
@@ -215,6 +215,10 @@
     <script src="{{ config.ASSETS_ROOT }}/js/stellar.js"></script>
     <script src="{{ config.ASSETS_ROOT }}/vendors/lightbox/simpleLightbox.min.js"></script>
     <script src="{{ config.ASSETS_ROOT }}/js/custom.js"></script>
+
+    <script>
+
+    </script>
 
 {% endblock javascripts %}
 

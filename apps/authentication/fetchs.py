@@ -32,7 +32,10 @@ def fetch_testimonials(number):
 
 def fetch_magazines(number):
 
-    magazines = Magazines.query.order_by(Magazines.magazineView.desc()).limit(number).all()
+    if number == 'all':
+        magazines = Magazines.query.order_by(Magazines.magazineView.desc()).all()
+    else:
+        magazines = Magazines.query.order_by(Magazines.magazineView.desc()).limit(number).all()
 
     magazine_data = {}
     
