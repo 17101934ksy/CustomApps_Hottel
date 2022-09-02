@@ -46,5 +46,7 @@ def fetch_magazines(number):
     return magazine_data
 
 
+
+
 def fetch_magazines_detail(magazine, number):
     return magazine[number]

@@ -1,7 +1,7 @@
 from apps.authentication.fetchs import fetch_accomodations, fetch_testimonials, fetch_magazines
 from apps.authentication.models import Magazines
 from apps.home import blueprint
-from flask import render_template, request, session, jsonify
+from flask import render_template, request, session, jsonify, redirect, url_for
 from flask_login import login_required
 from jinja2 import TemplateNotFound, TemplateAssertionError
 from werkzeug.utils import secure_filename
@@ -56,9 +56,10 @@ def view_about():
     return render_template('home/about.html', templateName='about', userId=uids, userName=unames, testimonialComment=comments, zip=zip)
 
 
-@blueprint.route('/magazine/<page_number>')
-@login_required
+@blueprint.route('/magazine/<page_number>', methods=['GET', 'POST'])
 def view_magazine(page_number):
+
+    print("rendering Test")
 
     magazine = fetch_magazines(8)
     contents_subject = ["여행", "미식", "숙소"]
@@ -73,7 +74,7 @@ def view_magazine(page_number):
 
     for idx, tag in enumerate(magazine['magazineTag']):
         magazine['magazineTag'][idx] = tag.split('#')
-
+    
     return render_template('home/magazine.html', templateName='magazine', magazine=magazine, pageNumber=page_number, userId=session['user_id'],\
         contentsSubject=contents_subject, contentsThema=contents_thema, nowDate=datetime.datetime.now(), zip=zip, enumerate=enumerate, len=len, ceil=math.ceil, int=int)
     
@@ -95,11 +96,12 @@ def view_magazine_write(user_id):
     magazine_seq = int(magazine_data['magazineSeq'][0]) + 1
 
     if request.method == 'POST':
-        data = request.get_json()
+        print("success")
 
-        print(data)
+    # elif request.method == 'GET':
+    #     data = request.data_json()
 
-        return jsonify({"result":"success"})
+    #     if 'wirtesuccess' in data.keys():
 
     return render_template('home/magazine-write.html', templateName='magazine-write', \
         userId=user_id, magazineSeq=magazine_seq, nowDate=datetime.datetime.now(), zip=zip, enumerate=enumerate)
@@ -112,13 +114,18 @@ def upload_files(magazine_seq):
         f = request.files['image']
       
         path = "./apps/static/image/magazines/" + str(magazine_seq)
+
+        if os.path.exists(path):
+            print("before shutil")
+            shutil.rmtree(path)
+            print("after shutil")
         os.mkdir(path)
         f.save(path + "/" + secure_filename(f.filename))
+        print("after save")
         
-        print({"result": "success"})
-
         return jsonify({"result": "success"})
     return jsonify({"result": "fail"})
+
 
 @blueprint.route('/uploads/none/magazines/<magazine_seq>', methods = ['GET', 'POST'])
 def upload_no_files(magazine_seq):
@@ -128,7 +135,14 @@ def upload_no_files(magazine_seq):
         print("test")
       
         path = "./apps/static/image/magazines/" 
+
+        if os.path.exists(path + str(magazine_seq)):
+            print("before shutil")
+            shutil.rmtree(path + str(magazine_seq))
+            print("after shutil")
+        
         os.mkdir(path + str(magazine_seq))
+
         shutil.copyfile(path + "noimg.jpg", path + str(magazine_seq) +'/noimg.jpg')
       
         print({"result": "success"})

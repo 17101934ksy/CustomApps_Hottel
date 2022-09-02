@@ -107,31 +107,27 @@
                         dataType: 'json',
                         contentType: 'application/json',
                         data: JSON.stringify(dataJson),
-                        success: function(response) {
-                            console.log('register success')
-                        }
+                        success: function(response){
+                                alert("test1")
+                            }
                     })
                     
                     const magazineImage = $("#magazine-file")[0];
-                    // 파일을 여러개 선택할 수 있으므로 files 라는 객체에 담긴다.
                     console.log("magazineImage: ", magazineImage.files)
 
                     if(magazineImage.files.length === 0){
                         $.ajax({
                             type:"POST",
                             url: "{{ url_for('home_blueprint.upload_no_files', magazine_seq=magazineSeq) }}",
+                            async: false,
                             dataType: 'json',
                             contentType: 'application/json',
-                            contentType: false,
                             data: {"file": "none"},
                             success: function(response){
-                                console.log(response['result'])
-                            },
-                            err: function(err){
-                                console.log('Error')
-                                    }
-                        })
-                    }
+                                alert("test2")
+                            }
+                        })}
+
                     else {
                         const formData = new FormData();
                         formData.append("image", magazineImage.files[0]);
@@ -139,21 +135,20 @@
                         $.ajax({
                             type:"POST",
                             url: "{{ url_for('home_blueprint.upload_files', magazine_seq=magazineSeq) }}",
+                            async: false,
                             processData: false,
                             contentType: false,
                             data: formData,
                             success: function(response){
-                                console.log(response['result'])
-                            },
-                            err: function(err){
-                                console.log('Error')
-                                    }
-                        })
+                                if (response['result'] == 'success'){
+                                    alert('upload success');
+                                    window.location.assign = "{{ url_for('home_blueprint.view_magazine', page_number=1) }}";
+                                }
+                            }})
+                        }
                     }
-                }
                 else {  
                     alert("Both Fields are required");
-                    document.getElementById("form").reset(); 
                     }  
             }); 
         });  
