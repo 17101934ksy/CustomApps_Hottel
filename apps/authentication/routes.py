@@ -4,7 +4,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from apps import db, login_manager
 from apps.authentication import blueprint
 from apps.authentication.forms import SiteLoginForm, CreateAccountForm
-from apps.authentication.models import Magazines, Testimonials, Users, BusinessRegisters, BusinessLists, Accomodations
+from apps.authentication.models import Magazines, Testimonials, Users, BusinessRegisters, BusinessLists, Accomodations, PaymentMethods
 from apps.authentication.util import verify_pass, crawler_db
 
 @blueprint.route('/')
@@ -177,3 +177,25 @@ def test_test():
         print(accomodation.accomodationId)
 
     return str(accomodations)
+
+
+@blueprint.route('/simulate_database/account', methods=['GET', 'POST'])
+@login_required
+def simulate_database_account():
+
+    if str(session['user_id']) == '1':
+        
+        for idx, name in enumerate(['(구)KB국민은행', '(신)KB국민은행', 'IBK기업은행', 'NH농협은행', '(구)신한은행', \
+            '(신)신한은행', '우리은행', 'KEB하나은행', '(구)외한은행', '씨티은행', \
+                'DGB대구은행', 'BNK부산은행', 'SC제일은행', '케이뱅크', '카카오뱅크']):
+
+            payment_method = PaymentMethods.query.filter_by(paymentMethodSeq=(idx+1)).first()
+            if payment_method is not None:
+                continue
+
+            payment_method = PaymentMethods(paymentMethod=name, paymentDepositAccount=None)
+            
+            db.session.add(payment_method)
+            db.session.commit()
+
+        return "db_clear"

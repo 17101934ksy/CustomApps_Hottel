@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, IntegerField, FloatField, RadioField, TextAreaField, HiddenField
+from wtforms import StringField, PasswordField, IntegerField, HiddenField, DateTimeField
 from wtforms.validators import Email, DataRequired, Length, EqualTo
 from flask_wtf.file import FileField, FileAllowed
 
@@ -40,5 +40,3 @@ class MagazineForm(FlaskForm):
     visibleFile = FileField('파일',
                             id='visible-file',
                             validators=[FileAllowed(['jpg', 'png'], 'jpg, png 확장자만 가능합니다.')])
-
-

@@ -48,18 +48,26 @@ def index():
         accomodationPrice=prices, userId=uids, userName=unames, testimonialComment=comments, zip=zip, enumerate=enumerate) 
 
 
-@blueprint.route('/accomodation')
-def view_accomodation():
-    ids, names, images, prices = fetch_accomodations(20)
-    return render_template('home/accomodation.html', templateName='accomodation', accomodationId=ids, accomodationName=names, accomodationImage=images, accomodationPrice=prices, \
-        zip=zip, enumerate=enumerate)    
-
-
 @blueprint.route('/about')
 def view_about():
     uids, unames, comments = fetch_testimonials(8)
     return render_template('home/about.html', templateName='about', userId=uids, userName=unames, testimonialComment=comments, zip=zip)
 
+@blueprint.route('/contact')
+def view_contact():
+    return render_template('home/contact.html', templateName='contact')
+
+@blueprint.route('/gallery')
+def view_gallery():
+    return render_template('home/gallery.html', templateName='gallery')
+
+
+@blueprint.route('/elements')
+def view_elements():
+    return render_template('home/elements.html', templateName='elements')
+
+
+#---------------------------------------------------------------- Magazine Start --------------------------------------------------------------------------#
 
 @blueprint.route('/magazine/<page_number>', methods=['GET', 'POST'])
 def view_magazine(page_number):
@@ -151,16 +159,25 @@ def view_magazine_write(user_id):
             form = magazine_form)
 
 
-@blueprint.route('/contact')
-def view_contact():
-    return render_template('home/contact.html', templateName='contact')
+#---------------------------------------------------------------- Magazine End --------------------------------------------------------------------------#
 
-@blueprint.route('/gallery')
-def view_gallery():
-    return render_template('home/gallery.html', templateName='gallery')
+@blueprint.route('/accomodation')
+def view_accomodation():
+    ids, names, images, prices = fetch_accomodations(20)
+    return render_template('home/accomodation.html', templateName='accomodation', accomodationId=ids, accomodationName=names, accomodationImage=images, accomodationPrice=prices, \
+        zip=zip, enumerate=enumerate)    
 
 
-@blueprint.route('/elements')
-def view_elements():
-    return render_template('home/elements.html', templateName='elements')
+#---------------------------------------------------------------- Accomodation Start --------------------------------------------------------------------------#
 
+@blueprint.route('/reservation/selectroom/<user_id>')
+def view_select_room(user_id):
+    return redirect('url_for(home_blueprint.accomodation)')
+
+@blueprint.route('/reservation/selectaccount/<user_id>')
+def view_select_account(user_id):
+    return "clear"
+
+@blueprint.route('/reservation/account/<user_id>')
+def view_account(user_id):
+    return "clear"

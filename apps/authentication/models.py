@@ -308,7 +308,62 @@ class MagazineComments(db.Model):
             }
         return str(self.info)
 
- 
+
+class PaymentMethods(db.Model):
+    
+    __tablename__ = 'PaymentMethods'
+
+    paymentMethodSeq = Column(Integer, primary_key=True, autoincrement=True)
+    paymentMethod = Column(String(300), nullable=False)
+    paymentDepositAccount = Column(String(300), nullable=True)
+
+    def __repr__(self):
+        self.info = {
+            "paymentMethodSeq": self.paymentMethodSeq,
+            "paymentMethod": self.paymentMethod,
+            "paymentDepositAccount": self.paymentDepositAccount
+        }
+        return self.info
+
+class CompleteReservations(db.Model):
+
+    __tablename__ = 'CompleteReservations'
+
+    completeSeq = Column(Integer, primary_key=True, autoincrement=True)
+    userId = Column(Integer, ForeignKey('Users.userId'), nullable=False)
+    roomId = Column(Integer, ForeignKey('Rooms.roomId'), nullable=False)
+    paymentMethodSeq = Column(Integer, ForeignKey('PaymentMethods.paymentMethodSeq'), nullable=False) 
+
+    paymentDateTime = Column(DateTime, nullable=False)
+    paymentName = Column(String(200), nullable=False)
+    paymentPoint = Column(Float, nullable=False)
+    paymentSale = Column(Integer, nullable=False)
+    paymentPrice = Column(Float, nullable=False)
+    paymentAccount = Column(String(300), nullable=True)
+    paymentRefundAccount = Column(String(300), nullable=False)
+
+    users = db.relationship('Users', backref='CompleteReservations')
+    rooms = db.relationship('Rooms', backref='CompleteReservations')
+    paymentMethods = db.relationship('PaymentMethods', backref='CompleteReservations')
+
+    def __repr__(self):
+        self.info = {
+            "completeSeq": self.completeSeq,
+            "userId": self.userId,
+            "roomId": self.roomId,
+            "paymentDateTime": self.paymentDateTime,
+            "paymentMethodSeq": self.paymentMethodSeq,
+            "paymentName": self.paymentName,
+            "paymentPoint": self.paymentPoint,
+            "paymentSale": self.paymentSale,
+            "paymentPrice": self.paymentPrice,
+            "paymentAccount": self.paymentAccount,
+            "paymentRefundAccount": self.paymentRefundAccount
+        }
+        return str(self.info)
+
+
+
 @login_manager.user_loader
 def user_loader(userId):
     return Users.query.filter_by(userId=userId).first()
