@@ -4,8 +4,11 @@ from flask_login import current_user, login_user, logout_user, login_required
 from apps import db, login_manager
 from apps.authentication import blueprint
 from apps.authentication.forms import SiteLoginForm, CreateAccountForm
-from apps.authentication.models import Magazines, Testimonials, Users, BusinessRegisters, BusinessLists, Accomodations, PaymentMethods
+from apps.authentication.models import Magazines, Testimonials, Users, BusinessRegisters, BusinessLists, Accomodations, PaymentMethods, Rooms
 from apps.authentication.util import verify_pass, crawler_db
+
+import random
+from datetime import datetime, date
 
 @blueprint.route('/')
 def route_default():
@@ -166,6 +169,7 @@ def simulate_database():
     return str("session fail")
 
 
+
 @blueprint.route('/test_test', methods=['GET', 'POST'])
 def test_test():
 
@@ -184,7 +188,7 @@ def test_test():
 def simulate_database_account():
 
     if str(session['user_id']) == '1':
-        
+
         for idx, name in enumerate(['(구)KB국민은행', '(신)KB국민은행', 'IBK기업은행', 'NH농협은행', '(구)신한은행', \
             '(신)신한은행', '우리은행', 'KEB하나은행', '(구)외한은행', '씨티은행', \
                 'DGB대구은행', 'BNK부산은행', 'SC제일은행', '케이뱅크', '카카오뱅크']):
@@ -199,3 +203,49 @@ def simulate_database_account():
             db.session.commit()
 
         return "db_clear"
+
+@blueprint.route('/simulate_database/room', methods=['GET', 'POST'])
+@login_required
+def simulate_database_room():
+
+    if str(session['user_id']) == '1':
+
+        accomodations = Accomodations.query.order_by(Accomodations.accomodationId.desc()).all()
+
+        ad_list = []
+        for ad in accomodations:
+            ad_list.append(ad.accomodationId)
+
+        room = Rooms.query.filter_by(Rooms.roomId).first()
+
+        if room is not None:
+            return "db clear"
+
+        for idx, ad in enumerate(ad_list):
+            for dt in [i for i in range(1, 31)]:
+                for number, sp, up, name, image in zip([110, 120, 205, 300], [2, 4, 5, 6], [3, 4, 7, 8], ["Deluxe", "Double Deluxe", "Special", "Royal"], ['room1.jpg', 'room2.jpg', \
+                    'room3.jpg', 'room4.jpg']):
+                        
+                    if sp == 2:
+                        rsp = 40000 + idx * 1000
+                        rop = 50000 + idx * 1000
+                    elif sp == 4:
+                        rsp = 47000 + idx * 1000
+                        rop = 55000 + idx * 1000
+                    elif sp == 5:
+                        rsp = 70000 + idx * 1000
+                        rop = 80000 + idx * 1000
+                    else:
+                        rsp = 90000 + idx * 1000
+                        rop = 110000 + idx * 1000
+                    
+                    room = Rooms(roomDateTime=date(2022, 8, dt), roomNumber=number, roomName=name, \
+                        roomCheckIn=datetime(2022, 8, dt, 14), roomCheckOut=datetime(2022, 8, dt+1, 11), \
+                        roomStandardPopulation=sp, roomUptoPopulation=up, roomImage='/static/image/'+image, roomSalePrice=rsp, \
+                            roomOriginalPrice=rop, roomRate=round(random.random()*5, 1), accomodationId=ad)
+
+                    print(room) 
+                    db.session.add(room)
+                    db.session.commit()
+
+    return "db clear"

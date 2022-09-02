@@ -1,7 +1,8 @@
+from sqlite3 import Date
 from flask_login import UserMixin
 from apps import db, login_manager
 from apps.authentication.util import hash_pass
-from sqlalchemy import Column, Integer, String, LargeBinary, DateTime, ForeignKey, Float, TEXT
+from sqlalchemy import Column, Integer, String, LargeBinary, DateTime, ForeignKey, Float, TEXT, DATE
 
 class Users(db.Model, UserMixin):
 
@@ -97,7 +98,7 @@ class Rooms(db.Model):
     __tablename__ = 'Rooms'
 
     roomId = Column(Integer, primary_key=True, autoincrement=True)
-    roomDateTime = Column(DateTime, nullable=False)
+    roomDateTime = Column(DATE, nullable=False)
     roomNumber = Column(Integer, nullable=False)
     roomName = Column(String(200), nullable=False)
     roomCheckIn = Column(DateTime, nullable=False)
@@ -195,17 +196,21 @@ class Reviews(db.Model):
 
     reviewId = Column(Integer, primary_key=True, autoincrement=True)
     userId = Column(Integer, ForeignKey('Users.userId'))
+    reserveId = Column(Integer, ForeignKey('Reservations.reserveId'))
+
     reviewImage1 = Column(String(400), nullable=True)
     reviewImage2 = Column(String(400), nullable=True)
     reviewImage3 = Column(String(400), nullable=True)
     reviewComment = Column(String(1000), nullable=False)
 
     users = db.relationship('Users', backref='Reviews')
+    reserves = db.relationship('Reservations', backref='Reviews')
 
     def __repr__(self):
         self.info = {
             "reviewId": self.reviewId,
             "userId": self.userId,
+            "reserveId": self.reserveId,
             "reviewImage1": self.reviewImage1,
             "reviewImage2": self.reviewImage2,
             "reviewImage3": self.reviewImage3,

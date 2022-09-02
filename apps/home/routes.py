@@ -161,14 +161,23 @@ def view_magazine_write(user_id):
 
 #---------------------------------------------------------------- Magazine End --------------------------------------------------------------------------#
 
+#---------------------------------------------------------------- Accomodation Start --------------------------------------------------------------------------#
+
+
 @blueprint.route('/accomodation')
 def view_accomodation():
     ids, names, images, prices = fetch_accomodations(20)
     return render_template('home/accomodation.html', templateName='accomodation', accomodationId=ids, accomodationName=names, accomodationImage=images, accomodationPrice=prices, \
         zip=zip, enumerate=enumerate)    
 
+@blueprint.route('/room', methods=['GET', 'POST'])
+def view_room():
+    page = request.args.get('page', default = 1, type = int)
+    return render_template('home/room.html')    
 
-#---------------------------------------------------------------- Accomodation Start --------------------------------------------------------------------------#
+#---------------------------------------------------------------- Accomodation End --------------------------------------------------------------------------#
+
+#---------------------------------------------------------------- Reservarion Start --------------------------------------------------------------------------#
 
 @blueprint.route('/reservation/selectroom/<user_id>')
 def view_select_room(user_id):

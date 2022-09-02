@@ -12,9 +12,9 @@
                 <div class="accomodation_item text-center">
                     <div class="hotel_img">
                         <img src="{{ image }}" alt="{{ config.ASSETS_ROOT }}/image/room{{ idx }}.jpg">
-                        <a href="#" class="btn theme_btn button_hover">Book Now</a>
+                        <a href="{{url_for('home_blueprint.view_room')}}" class="btn theme_btn button_hover">Book Now</a>
                     </div>
-                    <a href="#"><h6 class="sec_h4">{{ name }}</h6></a>
+                    <a href="{{url_for('home_blueprint.view_room')}}"><h6 class="sec_h4">{{ name }}</h6></a>
                     <h6>{{price}}<small>hotel</small></h6>
                 </div>
             </div>
