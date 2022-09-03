@@ -1,4 +1,3 @@
-from sqlite3 import Date
 from flask_login import UserMixin
 from apps import db, login_manager
 from apps.authentication.util import hash_pass
@@ -106,8 +105,8 @@ class Rooms(db.Model):
     roomStandardPopulation =Column(Integer)
     roomUptoPopulation =Column(Integer)
     roomImage = Column(String(300))
-    roomSalePrice = Column(String(100), nullable=True)
-    roomOriginalPrice = Column(String(100))
+    roomSalePrice = Column(Integer, nullable=True)
+    roomOriginalPrice = Column(Integer)
     roomRate = Column(Float, nullable=True)
     accomodationId = Column(Integer, ForeignKey('Accomodations.accomodationId'))
 
@@ -154,22 +153,55 @@ class Reservations(db.Model):
     
     __tablename__ = 'Reservations'
 
-    reserveId = Column(Integer, primary_key=True, autoincrement=True)
-    reserveTime = Column(DateTime, nullable=False)
-    reservePrice = Column(String(200), nullable=False)
-    cartId = Column(Integer, ForeignKey('Carts.cartId'))
+    reserveSeq = Column(Integer, primary_key=True, autoincrement=True)
+    userId = Column(Integer, ForeignKey('Users.userId'), nullable=False)
+    roomId = Column(Integer, ForeignKey('Rooms.roomId'), nullable=False)
+    paymentMethodSeq = Column(Integer, ForeignKey('PaymentMethods.paymentMethodSeq'), nullable=False) 
+    paymentSaleId = Column(Integer, ForeignKey('PaymentSaleMethods.paymentSaleId'),nullable=True)
 
-    carts = db.relationship('Carts', backref='Reservations')
+    paymentDateTime = Column(DateTime, nullable=False)
+    paymentName = Column(String(200), nullable=False)
+    paymentPoint = Column(Integer, nullable=False)
+    paymentAccount = Column(String(300), nullable=True)
+    paymentRefundAccount = Column(String(300), nullable=False)
+
+    users = db.relationship('Users', backref='Reservations')
+    rooms = db.relationship('Rooms', backref='Reservations')
+    paymentMethods = db.relationship('PaymentMethods', backref='Reservations')
+    paymentSaleMethods = db.relationship('PaymentSaleMethods', backref='Reservations') 
 
     def __repr__(self):
         self.info = {
-            "reserveId": self.reserveId,
-            "reserveTime": self.reserveTime,
-            "reservePrice": self.reservePrice,
-            "cartId": self.cartId
+            "reserveSeq": self.reserveSeq,
+            "userId": self.userId,
+            "roomId": self.roomId,
+            "paymentMethodSeq": self.paymentMethodSeq,
+            "paymentSaleId": self.paymentSaleId,
+            "paymentDateTime": self.paymentDateTime,
+            "paymentName": self.paymentName,
+            "paymentPoint": self.paymentPoint,
+            "paymentAccount": self.paymentAccount,
+            "paymentRefundAccount": self.paymentRefundAccount
         }
-        return str(self.info) 
+        return str(self.info)
 
+class PaymentSaleMethods(db.Model):
+
+    __tablename__ = "PaymentSaleMethods"
+
+    paymentSaleId = Column(Integer, primary_key=True, autoincrement=True)
+    paymentSaleMethod = Column(String(400), nullable=False)
+    paymentSalePrice = Column(Integer, nullable=True)
+    paymentSaleRate = Column(Float, nullable=True)
+
+    def __repr__(self):
+        self.info = {
+            "paymentSaleId": self.paymentSaleId,
+            "paymentSaleMethod": self.paymentSaleMethod,
+            "paymentSalePrice": self.paymentSalePrice,
+            "paymentSaleRate": self.paymentSaleRate
+        }
+        return str(self.info)
 
 class Testimonials(db.Model):
 
@@ -190,27 +222,24 @@ class Testimonials(db.Model):
         return str(self.info) 
 
 
-class Reviews(db.Model):
+class RoomReviews(db.Model):
     
-    __tablename__ = 'Reviews'
+    __tablename__ = 'RoomReviews'
 
-    reviewId = Column(Integer, primary_key=True, autoincrement=True)
-    userId = Column(Integer, ForeignKey('Users.userId'))
-    reserveId = Column(Integer, ForeignKey('Reservations.reserveId'))
+    roomReviewSeq = Column(Integer, primary_key=True, autoincrement=True)
+    completeSeq = Column(Integer, ForeignKey('UsedCompletes.completeSeq'))
 
     reviewImage1 = Column(String(400), nullable=True)
     reviewImage2 = Column(String(400), nullable=True)
     reviewImage3 = Column(String(400), nullable=True)
     reviewComment = Column(String(1000), nullable=False)
 
-    users = db.relationship('Users', backref='Reviews')
-    reserves = db.relationship('Reservations', backref='Reviews')
+    usedCompletes = db.relationship('UsedCompletes', backref='RoomReviews')
 
     def __repr__(self):
         self.info = {
-            "reviewId": self.reviewId,
-            "userId": self.userId,
-            "reserveId": self.reserveId,
+            "roomReviewId": self.roomReviewId,
+            "completeSeq": self.completeSeq,
             "reviewImage1": self.reviewImage1,
             "reviewImage2": self.reviewImage2,
             "reviewImage3": self.reviewImage3,
@@ -234,24 +263,24 @@ class Points(db.Model):
         }
         return str(self.info) 
 
-class ReviewComments(db.Model):
+class RoomReviewComments(db.Model):
 
-    __tablename__ = 'ReviewComments'
+    __tablename__ = 'RoomReviewComments'
 
-    reviewId = Column(Integer, ForeignKey('Reviews.reviewId'), primary_key=True)
-    commentSeq = Column(Integer, primary_key=True, autoincrement=True)
+    reviewCommentSeq = Column(Integer, primary_key=True, autoincrement=True)
+    roomReviewSeq = Column(Integer, ForeignKey('RoomReviews.roomReviewSeq'), primary_key=True)
     userId = Column(Integer, ForeignKey('Users.userId'))
-    commentContent = Column(TEXT, nullable=False)
+    reviewComment = Column(TEXT, nullable=False)
 
-    reviews = db.relationship('Reviews', backref='ReviewComments')
-    users = db.relationship('Users', backref='ReviewComments')
+    roomReviews = db.relationship('RoomReviews', backref='RoomReviewComments')
+    users = db.relationship('Users', backref='RoomReviewComments')
 
     def __repr__(self):
         self.info = {
-            "reviewId": self.userId,
-            "commentSeq": self.commentSeq,
+            "reviewCommentSeq": self.reviewCommentSeq,
+            "roomReviewSeq": self.roomReviewSeq,
             "userId": self.userId,
-            "commentContent": self.commentContent
+            "reviewComment": self.reviewComment
         }
         return str(self.info) 
     
@@ -296,7 +325,7 @@ class MagazineComments(db.Model):
 
     __tablename__ = 'MagazineComments'
 
-    commentSeq = Column(Integer, primary_key=True, autoincrement=True)
+    magazineCommentSeq = Column(Integer, primary_key=True, autoincrement=True)
     magazineSeq = Column(Integer, ForeignKey('Magazines.magazineSeq'))
     userId = Column(Integer, ForeignKey('Users.userId'))
     magazineComment = Column(TEXT)
@@ -306,7 +335,7 @@ class MagazineComments(db.Model):
     
     def __repr__(self):
         self.info = {
-                "commentSeq": self.commentSeq,
+                "magazineCommentSeq": self.magazineCommentSeq,
                 "magazineSeq": self.magazineSeq,
                 "userId": self.userId,
                 "magazineComment": self.magazineComment
@@ -330,40 +359,17 @@ class PaymentMethods(db.Model):
         }
         return self.info
 
-class CompleteReservations(db.Model):
+class UsedCompletes(db.Model):
 
-    __tablename__ = 'CompleteReservations'
+    __tablename__ = 'UsedCompletes'
 
     completeSeq = Column(Integer, primary_key=True, autoincrement=True)
-    userId = Column(Integer, ForeignKey('Users.userId'), nullable=False)
-    roomId = Column(Integer, ForeignKey('Rooms.roomId'), nullable=False)
-    paymentMethodSeq = Column(Integer, ForeignKey('PaymentMethods.paymentMethodSeq'), nullable=False) 
-
-    paymentDateTime = Column(DateTime, nullable=False)
-    paymentName = Column(String(200), nullable=False)
-    paymentPoint = Column(Float, nullable=False)
-    paymentSale = Column(Integer, nullable=False)
-    paymentPrice = Column(Float, nullable=False)
-    paymentAccount = Column(String(300), nullable=True)
-    paymentRefundAccount = Column(String(300), nullable=False)
-
-    users = db.relationship('Users', backref='CompleteReservations')
-    rooms = db.relationship('Rooms', backref='CompleteReservations')
-    paymentMethods = db.relationship('PaymentMethods', backref='CompleteReservations')
+    reserveSeq = Column(Integer, ForeignKey('Reservations.reserveSeq')) 
 
     def __repr__(self):
         self.info = {
             "completeSeq": self.completeSeq,
-            "userId": self.userId,
-            "roomId": self.roomId,
-            "paymentDateTime": self.paymentDateTime,
-            "paymentMethodSeq": self.paymentMethodSeq,
-            "paymentName": self.paymentName,
-            "paymentPoint": self.paymentPoint,
-            "paymentSale": self.paymentSale,
-            "paymentPrice": self.paymentPrice,
-            "paymentAccount": self.paymentAccount,
-            "paymentRefundAccount": self.paymentRefundAccount
+            "reserveSeq": self.reserveSeq,
         }
         return str(self.info)
 

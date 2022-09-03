@@ -34,7 +34,6 @@ $ cd hottel
 
 숙박 시설 예약 서비스인 "HoTTel"을 개발
 
-<br />
 ### 👉 데스크 리서치 및 구현 목표
 
 1. 메인 첫 화면에서 예약할 수 있는 방을 빠르게 검색할 수 있도록 하는 기능이 필요함
@@ -62,6 +61,8 @@ $ cd hottel
 
 ### 👉 `ERD` 설계 수정 중 
 
+<a href="https://blog.naver.com/ksyn1611/222865796474"> ERD 상세 설명 코세 블로그 이동 <a/>
+
 `Users`: 유저(이용객, 사업자)<br />
 `BusinessRegisters`: 사업자 등록(일반 이용객에서 사업자 권한 획득)<br />
 `BusinessLists`: 사업자 영업 리스트(주소가 다른 숙박 시설을 운영할 수 있기 때문에 사업자와 숙박시설의 일 대 다 성립)<br />
@@ -69,13 +70,17 @@ $ cd hottel
 `Rooms`: 숙박시설의 다양한 방<br />
 `Carts`: 이용객의 장바구니<br />
 `Reservations`: 예약 상황<br />
-`Reviews`: 방에 대한 리뷰<br />
+`RoomReviews`: 방에 대한 리뷰<br />
 `Points`: 댓글에 대한 포인트<br />
-`ReviewComments`: 리뷰 코멘<br />
+`RoomReviewComments`: 리뷰 코멘트<br />
+`PaymentMethods`: 지불 수단 <br/>
+`PaymentSaleMethods`: 할인 수단 <br/>
+`UsedComplete`: 사용 완료 <br/>
 `Magazines`: 여행 매거진<br />
 `MagazineComments`: 여행 코멘트<br />
+`Testimonials`: 테스트 리뷰 <br />
 
-<img src = "https://user-images.githubusercontent.com/88478829/186169072-e3fb93f0-7d6e-4fe7-8096-e86ee0602267.png" width="width 50%" height="height 50%">
+<img src = "https://user-images.githubusercontent.com/88478829/188262699-44628000-6038-4bfe-9a62-8b658b4f02a8.png" width="width 50%" height="height 50%">
 
 ### 👉 `package` 설계 
 
