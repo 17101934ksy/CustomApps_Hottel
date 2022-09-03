@@ -4,7 +4,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from apps import db, login_manager
 from apps.authentication import blueprint
 from apps.authentication.forms import SiteLoginForm, CreateAccountForm
-from apps.authentication.models import Magazines, Testimonials, Users, BusinessRegisters, BusinessLists, Accomodations, PaymentMethods, Rooms
+from apps.authentication.models import Magazines, RoomDateTimes, Testimonials, Users, BusinessRegisters, BusinessLists, Accomodations, PaymentMethods, Rooms
 from apps.authentication.util import verify_pass, crawler_db
 
 import random
@@ -204,17 +204,52 @@ def simulate_database_account():
 
         return "db_clear"
 
-@blueprint.route('/simulate_database/room/<int:month>', methods=['GET', 'POST'])
+@blueprint.route('/simulate_database/room', methods=['GET', 'POST'])
 @login_required
-def simulate_database_room(month):
+def simulate_database_room():
 
     if str(session['user_id']) == '1':
 
         accomodations = Accomodations.query.order_by(Accomodations.accomodationId.desc()).all()
 
-        ad_list = []
-        for ad in accomodations:
-            ad_list.append(ad.accomodationId)
+        rooms = Rooms.query.filter_by(accomodationId=accomodations[0].accomodationId).first()
+
+        if rooms is not None:
+            return "db already clear" 
+
+        for idx, ad in enumerate(accomodations):
+            for number, sp, up, name, image in zip([110, 120, 205, 300], [2, 4, 5, 6], [3, 4, 7, 8], ["Deluxe", "Double Deluxe", "Special", "Royal"], ['room1.jpg', 'room2.jpg', \
+                'room3.jpg', 'room4.jpg']):
+                    
+                if sp == 2:
+                    rsp = 40000 + idx * 1000
+                    rop = 50000 + idx * 1000
+                elif sp == 4:
+                    rsp = 47000 + idx * 1000
+                    rop = 55000 + idx * 1000
+                elif sp == 5:
+                    rsp = 70000 + idx * 1000
+                    rop = 80000 + idx * 1000
+                else:
+                    rsp = 90000 + idx * 1000
+                    rop = 110000 + idx * 1000 
+                
+                room = Rooms(roomNumber=number, roomName=name, roomCheckIn="14:00", roomCheckOut="11:00", \
+                    roomStandardPopulation=sp, roomUptoPopulation=up, roomImage='/static/image/'+image, roomWifi=True, \
+                        roomAirConditioner=True, roomMicrowave=True, roomTv=True, roomRate=round(random.random()*5, 1), \
+                            roomSalePrice=rsp, roomOriginalPrice=rop,accomodationId=ad.accomodationId)
+
+                print(room) 
+                db.session.add(room)
+                db.session.commit()
+
+    return "db clear"
+
+@blueprint.route('/simulate_database/room/<int:month>', methods=['GET', 'POST'])
+@login_required
+def simulate_database_room_datetime(month):
+
+    if str(session['user_id']) == '1':
 
         if month in [1, 3, 5, 7, 8, 10, 12]:
             lastday = 31
@@ -225,36 +260,28 @@ def simulate_database_room(month):
         else:
             return ValueError("1~12월까지 입력하세요.")
 
-        rooms = Rooms.query.filter_by(roomDateTime=datetime(2022, month, 1)).first()
+        rooms = RoomDateTimes.query.filter_by(roomSeq=1).first()
 
         if rooms is not None:
             return "db already clear" 
 
-        for idx, ad in enumerate(ad_list):
-            for dt in [i for i in range(1, lastday)]:
-                for number, sp, up, name, image in zip([110, 120, 205, 300], [2, 4, 5, 6], [3, 4, 7, 8], ["Deluxe", "Double Deluxe", "Special", "Royal"], ['room1.jpg', 'room2.jpg', \
-                    'room3.jpg', 'room4.jpg']):
-                        
-                    if sp == 2:
-                        rsp = 40000 + idx * 1000
-                        rop = 50000 + idx * 1000
-                    elif sp == 4:
-                        rsp = 47000 + idx * 1000
-                        rop = 55000 + idx * 1000
-                    elif sp == 5:
-                        rsp = 70000 + idx * 1000
-                        rop = 80000 + idx * 1000
-                    else:
-                        rsp = 90000 + idx * 1000
-                        rop = 110000 + idx * 1000
-                    
-                    room = Rooms(roomDateTime=date(2022, month, dt), roomNumber=number, roomName=name, \
-                        roomCheckIn=datetime(2022, month, dt, 14), roomCheckOut=datetime(2022, month, dt+1, 11), \
-                        roomStandardPopulation=sp, roomUptoPopulation=up, roomImage='/static/image/'+image, roomSalePrice=rsp, \
-                            roomOriginalPrice=rop, roomRate=round(random.random()*5, 1), accomodationId=ad)
+        rooms = Rooms.query.order_by(Rooms.roomId.desc()).all()
 
-                    print(room) 
-                    db.session.add(room)
-                    db.session.commit()
+        for idx, room in enumerate(rooms):
+            for dt in [i for i in range(1, lastday)]:
+                
+                today = datetime(2022, month, dt)
+
+                if today.weekday() in [4, 5]:
+                    price = room.roomSalePrice + 30000
+                else:
+                    price = room.roomSalePrice
+
+                room_datetimes = RoomDateTimes(roomId=room.roomId, roomDateTime=today, \
+                    roomDynamicPrice=price)
+
+                print(room_datetimes) 
+                db.session.add(room_datetimes)
+                db.session.commit()
 
     return "db clear"

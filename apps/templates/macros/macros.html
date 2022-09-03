@@ -74,7 +74,7 @@
 {% endmacro %}
 
 
-{% macro data_room_detail(room) %}
+{% macro data_room_detail(room, zip) %}
 
 <section class="facilities_area section_gap">
     <div class="overlay bg-parallax" data-stellar-ratio="0.8" data-stellar-vertical-offset="0" data-background="">  
@@ -85,39 +85,28 @@
             <p>room['roomName']은 다음 시설을 제공합니다.</p>
         </div>
         <div class="row mb_10">
+            {% for name, facility, icon in zip(["체크인", "체크아웃", "최소인원", "최대인원", "와이파이", "에어컨", "전자레인지", "TV", "별점"], 
+                [room['roomCheckIn'], room['roomCheckOut'], room['roomStandardPopulation'], room['roomUptoPopulation'],
+                room['roomWifi'], room['roomAirConditioner'], room['roomMicrowave'], room['roomTv'], room['roomRate']],
+                ["clock", "clock", "user", "user", "cog", "cog", "cog", "cog", "star"])%}
 
-            <div class="col-mg-3 col-md-2">
+            <div class="col-mg-2 col-md-4">
                 <div class="facilities_item">
-                    <h6 class="sec_h6"><i class="lnr lnr-clock"></i>체크인</h4>
-                    <p>{{ room['roomCheckIn'] }}</p>
-                </div>
+                    <h6 class="sec_h6"><i class="lnr lnr-{{ icon }}"></i> &nbsp;&nbsp;{{ name }}</h4>
+                        {% if facility in [room['roomWifi'], room['roomAirConditioner'], room['roomMicrowave'], room['roomTv']] %}
+                            {% if facility == True %}
+                                <p> 제공 </p>
+                            {% else %}
+                                <p> 미제공 </p>
+                            {% endif %}
+                        {% else %}
+                        <p> {{ facility }} </p>
+                        {% endif %}
+                </div>      
             </div>
-            <div class="col-mg-3 col-md-2">
-                <div class="facilities_item">
-                    <h6 class="sec_h6"><i class="lnr lnr-clock"></i>체크아웃</h4>
-                    <p>{{ room['roomCheckOut'] }}</p>
-                </div>
-            </div>
-            <div class="col-mg-3 col-md-2">
-                <div class="facilities_item">
-                    <h6 class="sec_h6"><i class="lnr lnr-user"></i>최소 인원</h4>
-                    <p>{{ room['roomStandardPopulation'] }}명</p>
-                </div>
-            </div>
-            <div class="col-mg-3 col-md-2">
-                <div class="facilities_item">
-                    <h6 class="sec_h6"><i class="lnr lnr-user"></i>최대 인원</h4>
-                    <p>{{ room['roomUptoPopulation'] }}명</p>
-                </div>
-            </div>
-            <div class="col-mg-3 col-md-2">
-                <div class="facilities_item">
-                    <h6 class="sec_h6"><i class="lnr lnr-star"></i>별점</h4>
-                    <p>{{ room['roomRate']}}점</p>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
-</section>
+</section>            
 
 {% endmacro %}

@@ -1,7 +1,7 @@
 from flask_login import UserMixin
 from apps import db, login_manager
 from apps.authentication.util import hash_pass
-from sqlalchemy import Column, Integer, String, LargeBinary, DateTime, ForeignKey, Float, TEXT, DATE
+from sqlalchemy import Column, Integer, String, LargeBinary, DateTime, ForeignKey, Float, TEXT, DATE, BOOLEAN
 
 class Users(db.Model, UserMixin):
 
@@ -97,17 +97,20 @@ class Rooms(db.Model):
     __tablename__ = 'Rooms'
 
     roomId = Column(Integer, primary_key=True, autoincrement=True)
-    roomDateTime = Column(DATE, nullable=False)
     roomNumber = Column(Integer, nullable=False)
     roomName = Column(String(200), nullable=False)
-    roomCheckIn = Column(DateTime, nullable=False)
-    roomCheckOut = Column(DateTime, nullable=False)
+    roomCheckIn = Column(String(100), nullable=False)
+    roomCheckOut = Column(String(100), nullable=False)
     roomStandardPopulation =Column(Integer)
     roomUptoPopulation =Column(Integer)
     roomImage = Column(String(300))
-    roomSalePrice = Column(Integer, nullable=True)
-    roomOriginalPrice = Column(Integer)
+    roomWifi = Column(BOOLEAN)
+    roomAirConditioner = Column(BOOLEAN)
+    roomMicrowave = Column(BOOLEAN)
+    roomTv = Column(BOOLEAN)
     roomRate = Column(Float, nullable=True)
+    roomSalePrice = Column(Integer, nullable=True)
+    roomOriginalPrice = Column(Integer, nullable=False)
     accomodationId = Column(Integer, ForeignKey('Accomodations.accomodationId'))
 
     accomodations = db.relationship('Accomodations', backref='Rooms')
@@ -115,20 +118,44 @@ class Rooms(db.Model):
     def __repr__(self):
         self.info = {
             "roomId": self.roomId,
-            "roomDateTime": self.roomDateTime,
             "roomNumber": self.roomNumber,
             "roomName": self.roomName,
-            "romeCheckIn": self.roomCheckIn,
-            "romeCheckOut": self.roomCheckOut,
+            "roomCheckIn": self.roomCheckIn,
+            "roomCheckOut": self.roomCheckOut,
             "roomStandardPopulation": self.roomStandardPopulation,
             "roomUptoPopulation": self.roomUptoPopulation,
-            "romeImage": self.roomImage,
-            "roomSalePrice": self.roomSalePrice,
-            "romeOriginalPrice": self.roomOriginalPrice,
+            "roomImage": self.roomImage,
+            "roomWifi": self.roomWifi,
+            "roomAirConditioner": self.roomAirConditioner,
+            "roomMicrowave": self.roomMicrowave,
+            "roomTv": self.roomTv,
             "roomRate": self.roomRate,
+            "roomSalePrice": self.roomSalePrice,
+            "roomOriginalPrice": self.roomOriginalPrice,
             "accomodationId": self.accomodationId
         }
         return str(self.info) 
+
+class RoomDateTimes(db.Model):
+
+    __tablename__ = 'RoomDateTimes'
+
+    roomSeq = Column(Integer, primary_key=True, autoincrement=True)
+    roomId = Column(Integer, ForeignKey('Rooms.roomId'))
+    roomDateTime = Column(DATE, nullable=False)
+    roomDynamicPrice = Column(Integer, nullable=True)
+    
+    rooms = db.relationship('Rooms', backref='RoomDateTimes')
+
+    def __repr__(self):
+        self.info = {
+            "roomSeq": self.roomSeq,
+            "roomId": self.roomId,
+            "roomDateTime": self.roomDateTime,
+            "roomDynamicPrice": self.roomDynamicPrice
+        }
+        return str(self.info) 
+
 
 class Carts(db.Model):
 
@@ -136,18 +163,20 @@ class Carts(db.Model):
 
     cartId = Column(Integer, primary_key=True)
     userId = Column(Integer, ForeignKey('Users.userId'))
-    roomId = Column(Integer, ForeignKey('Rooms.roomId'))
+    roomSeq = Column(Integer, ForeignKey('RoomDateTimes.roomSeq'))
 
     users = db.relationship('Users', backref='Carts')
-    rooms = db.relationship('Rooms', backref='Carts')
+    roomDateTimes = db.relationship('RoomDateTimes', backref='Carts')
 
     def __repr__(self):
         self.info = {
             "cartId": self.cartId,
             "userId": self.userId,
-            "roomId": self.roomId
+            "roomSeq": self.roomSeq
         }
         return str(self.info)
+
+
     
 class Reservations(db.Model):
     
@@ -155,7 +184,7 @@ class Reservations(db.Model):
 
     reserveSeq = Column(Integer, primary_key=True, autoincrement=True)
     userId = Column(Integer, ForeignKey('Users.userId'), nullable=False)
-    roomId = Column(Integer, ForeignKey('Rooms.roomId'), nullable=False)
+    roomSeq = Column(Integer, ForeignKey('RoomDateTimes.roomSeq'), nullable=False)
     paymentMethodSeq = Column(Integer, ForeignKey('PaymentMethods.paymentMethodSeq'), nullable=False) 
     paymentSaleId = Column(Integer, ForeignKey('PaymentSaleMethods.paymentSaleId'),nullable=True)
 
@@ -166,7 +195,7 @@ class Reservations(db.Model):
     paymentRefundAccount = Column(String(300), nullable=False)
 
     users = db.relationship('Users', backref='Reservations')
-    rooms = db.relationship('Rooms', backref='Reservations')
+    roomDateTimes = db.relationship('RoomDateTimes', backref='Reservations')
     paymentMethods = db.relationship('PaymentMethods', backref='Reservations')
     paymentSaleMethods = db.relationship('PaymentSaleMethods', backref='Reservations') 
 
@@ -174,7 +203,7 @@ class Reservations(db.Model):
         self.info = {
             "reserveSeq": self.reserveSeq,
             "userId": self.userId,
-            "roomId": self.roomId,
+            "roomSeq": self.roomSeq,
             "paymentMethodSeq": self.paymentMethodSeq,
             "paymentSaleId": self.paymentSaleId,
             "paymentDateTime": self.paymentDateTime,

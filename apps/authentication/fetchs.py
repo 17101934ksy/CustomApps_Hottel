@@ -1,4 +1,4 @@
-from apps.authentication.models import Accomodations, Testimonials, Users, Magazines, Rooms
+from apps.authentication.models import Accomodations, Reservations, Testimonials, Users, Magazines, Rooms
 from datetime import datetime, date
 from sqlalchemy import and_
 """
@@ -50,8 +50,8 @@ def fetch_magazines_detail(magazine, number):
 
 
 
-def fetch_rooms(accomodation_id, select_time=date.today()):
-    rooms = Rooms.query.filter(and_(Rooms.accomodationId==accomodation_id, Rooms.roomDateTime==select_time)).all()
+def fetch_rooms(accomodation_id):
+    rooms = Rooms.query.filter_by(accomodationId=accomodation_id).all()
     rooms = convert_dict(rooms)
 
     return rooms
@@ -60,6 +60,7 @@ def fetch_rooms(accomodation_id, select_time=date.today()):
 def fetch_room_details(room_id, select_time=date.today()):
     room = Rooms.query.filter_by(roomId=room_id).first()
 
+    # reservation = Reservations.query.filter_by(roomId=room_id).all()
     return room
 
 
