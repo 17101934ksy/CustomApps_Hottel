@@ -1,6 +1,6 @@
 from apps import db
 from apps.home import blueprint
-from apps.authentication.fetchs import fetch_accomodations, fetch_testimonials, fetch_magazines, fetch_rooms_detail
+from apps.authentication.fetchs import fetch_accomodations, fetch_testimonials, fetch_magazines, fetch_rooms, fetch_room_details
 from apps.authentication.models import Accomodations, Magazines
 from apps.authentication.forms import MagazineForm
 
@@ -55,16 +55,16 @@ def view_about():
 
 @blueprint.route('/contact')
 def view_contact():
-    return render_template('home/contact.html', templateName='contact')
+    return render_template('home/contact.html', templateName='연락처')
 
 @blueprint.route('/gallery')
 def view_gallery():
-    return render_template('home/gallery.html', templateName='gallery')
+    return render_template('home/gallery.html', templateName='HoTTel 갤러리')
 
 
 @blueprint.route('/elements')
 def view_elements():
-    return render_template('home/elements.html', templateName='elements')
+    return render_template('home/elements.html', templateName='지울 예정')
 
 
 #---------------------------------------------------------------- Magazine Start --------------------------------------------------------------------------#
@@ -95,7 +95,7 @@ def view_magazine(page_number):
 def view_magazine_detail(magazine_id, magazine_writer, magazine_date, magazine_view, magazine_comment, magazine_title, magazine_content, magazine_link, \
     magazine_image, magazine_tag, magazine_thema):
 
-    return render_template('home/magazine-detail.html', templateName='magazine-detail', \
+    return render_template('home/magazine-detail.html', templateName='매거진 상세 정보', \
         nowDate=datetime.datetime.now(), zip=zip, enumerate=enumerate, len=len, ceil=math.ceil, int=int)
 
 
@@ -154,7 +154,7 @@ def view_magazine_write(user_id):
             
             return redirect(url_for('home_blueprint.view_magazine', page_number=1))
 
-    return render_template('home/magazine-write.html', templateName='magazine-write', \
+    return render_template('home/magazine-write.html', templateName='매거진 글쓰기', \
         userId=user_id, magazineSeq=magazine_seq, nowDate=datetime.datetime.now(), zip=zip, enumerate=enumerate, \
             form = magazine_form)
 
@@ -162,7 +162,6 @@ def view_magazine_write(user_id):
 #---------------------------------------------------------------- Magazine End --------------------------------------------------------------------------#
 
 #---------------------------------------------------------------- Accomodation Start --------------------------------------------------------------------------#
-
 
 @blueprint.route('/accomodation')
 def view_accomodation():
@@ -175,15 +174,26 @@ def view_room():
 
     accomodation_id = request.args.get('accomodationId')
 
-    rooms = fetch_rooms_detail(accomodation_id)
+    rooms = fetch_rooms(accomodation_id)
     
     accomodation_name = Accomodations.query.filter_by(accomodationId=accomodation_id).first().accomodationName
 
-    print(rooms)
     
-    return render_template('home/room.html', templateName='room', rooms=rooms, accomodationName=accomodation_name, zip=zip, enumerate=enumerate)    
+    return render_template('home/room.html', templateName='객실', rooms=rooms, accomodationName=accomodation_name, zip=zip, enumerate=enumerate)    
+
+@blueprint.route('/room-detail', methods=['GET', 'POST'])
+def view_room_detail():
+
+    room_id = request.args.get('roomId')
+
+    room = fetch_room_details(room_id)
+
+    print(room)
+    return render_template('home/room-detail.html', template='객실 상세 정보', room=room, zip=zip, enumerate=enumerate)
 
 #---------------------------------------------------------------- Accomodation End --------------------------------------------------------------------------#
+
+
 
 #---------------------------------------------------------------- Reservarion Start --------------------------------------------------------------------------#
 

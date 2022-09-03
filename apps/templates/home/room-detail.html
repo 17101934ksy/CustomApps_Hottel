@@ -1,4 +1,4 @@
-{% from 'macros/macros.html' import data_breadcrumb %}
+{% from 'macros/macros.html' import data_breadcrumb, data_room_detail %}
 {% extends "layouts/base.html" %}
 
 <!-- Specific CSS goes HERE -->
@@ -27,29 +27,29 @@
     <section class="accomodation_area section_gap">
         <div class="container">
             <div class="section_title text-center">
-                <h2 class="title_color">{{accomodationName}}</h2>
-                <p>{{accomodationName}}의 객실 소개</p>
+                <h2 class="title_color">{{room['roomName']}}</h2>
+                <p>{{room['roomName']}}의 객실 소개</p>
             </div>
             <div class="row mb_30">
-                {% for i, id, name, sp, op in zip(range(1, 5), rooms['roomId'], rooms['roomName'], rooms['roomSalePrice'], rooms['roomOriginalPrice']) %}
                 <div class="col-lg-3 col-sm-6">
                     <div class="accomodation_item text-center">
                         <div class="hotel_img">
-                            <img src="{{ config.ASSETS_ROOT }}/image/room{{i}}.jpg" alt="">
-                            <a href="{{url_for('home_blueprint.view_room_detail', roomId=id)}}" class="btn theme_btn button_hover">Book Now</a>
+                            <img src="{{room['roomImage']}}" alt="">
+                            <a href="#" class="btn theme_btn button_hover">Book Now</a>
                         </div>
-                        <a href="{{url_for('home_blueprint.view_room_detail', roomId=id)}}"><h4 class="sec_h4">{{name}}</h4></a>
-                        <p>할인가: {{sp}}원<small>&nbsp&nbsp원가: {{op}}원</small></p>
+                        <a href="#"><h4 class="sec_h4">{{room['roomNumber']}} 호</h4></a>
+                        <p>할인가: {{room['roomSalePrice']}}원<small>&nbsp&nbsp원가: {{room['roomOriginalPrice']}}원</small></p>
                     </div>
                 </div>
-                {% endfor %}
             </div>
         </div>
     </section>
     <!--================ Accomodation Area  =================-->
-    <!--================Booking Tabel Area =================-->
 
-    <!--================Booking Tabel Area  =================-->
+
+    <!--================ Testimonial Area  =================-->
+    {{ data_room_detail(room) }}
+    <!--================ Testimonial Area  =================-->
     
     <!--================ Footer Area  =================-->
     {% include 'includes/footer.html' %}

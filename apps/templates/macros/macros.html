@@ -72,3 +72,52 @@
 </section>
 
 {% endmacro %}
+
+
+{% macro data_room_detail(room) %}
+
+<section class="facilities_area section_gap">
+    <div class="overlay bg-parallax" data-stellar-ratio="0.8" data-stellar-vertical-offset="0" data-background="">  
+    </div>
+    <div class="container">
+        <div class="section_title text-center">
+            <h2 class="title_w">{{room['roomName']}} 객실 정보</h2>
+            <p>room['roomName']은 다음 시설을 제공합니다.</p>
+        </div>
+        <div class="row mb_10">
+
+            <div class="col-mg-3 col-md-2">
+                <div class="facilities_item">
+                    <h6 class="sec_h6"><i class="lnr lnr-clock"></i>체크인</h4>
+                    <p>{{ room['roomCheckIn'] }}</p>
+                </div>
+            </div>
+            <div class="col-mg-3 col-md-2">
+                <div class="facilities_item">
+                    <h6 class="sec_h6"><i class="lnr lnr-clock"></i>체크아웃</h4>
+                    <p>{{ room['roomCheckOut'] }}</p>
+                </div>
+            </div>
+            <div class="col-mg-3 col-md-2">
+                <div class="facilities_item">
+                    <h6 class="sec_h6"><i class="lnr lnr-user"></i>최소 인원</h4>
+                    <p>{{ room['roomStandardPopulation'] }}명</p>
+                </div>
+            </div>
+            <div class="col-mg-3 col-md-2">
+                <div class="facilities_item">
+                    <h6 class="sec_h6"><i class="lnr lnr-user"></i>최대 인원</h4>
+                    <p>{{ room['roomUptoPopulation'] }}명</p>
+                </div>
+            </div>
+            <div class="col-mg-3 col-md-2">
+                <div class="facilities_item">
+                    <h6 class="sec_h6"><i class="lnr lnr-star"></i>별점</h4>
+                    <p>{{ room['roomRate']}}점</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endmacro %}

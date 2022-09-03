@@ -50,13 +50,18 @@ def fetch_magazines_detail(magazine, number):
 
 
 
-def fetch_rooms_detail(accomodation_id, select_time=date.today()):
-    
+def fetch_rooms(accomodation_id, select_time=date.today()):
     rooms = Rooms.query.filter(and_(Rooms.accomodationId==accomodation_id, Rooms.roomDateTime==select_time)).all()
-
     rooms = convert_dict(rooms)
 
     return rooms
+
+
+def fetch_room_details(room_id, select_time=date.today()):
+    room = Rooms.query.filter_by(roomId=room_id).first()
+
+    return room
+
 
 
 def convert_dict(db_item):
