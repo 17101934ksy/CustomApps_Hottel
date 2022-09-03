@@ -1,5 +1,6 @@
-from apps.authentication.models import Accomodations, Testimonials, Users, Magazines
-
+from apps.authentication.models import Accomodations, Testimonials, Users, Magazines, Rooms
+from datetime import datetime, date
+from sqlalchemy import and_
 """
 databases에서 데이터를 가져오는 func
 """
@@ -37,19 +38,37 @@ def fetch_magazines(number):
     else:
         magazines = Magazines.query.order_by(Magazines.magazineView.desc()).limit(number).all()
 
-    magazine_data = {}
+    magazines = convert_dict(magazines)
     
-    for key in magazines[0].__dict__.keys():
-        magazine_data[key] = []
-
-    for magazine in magazines:
-        for key, value in zip([magazine_data[k] for k in magazine_data.keys()], magazine.__dict__.values()):
-            key.append(value)
-            
-    return magazine_data
+    return magazines
 
 
 
 
 def fetch_magazines_detail(magazine, number):
     return magazine[number]
+
+
+
+def fetch_rooms_detail(accomodation_id, select_time=date.today()):
+    
+    rooms = Rooms.query.filter(and_(Rooms.accomodationId==accomodation_id, Rooms.roomDateTime==select_time)).all()
+
+    rooms = convert_dict(rooms)
+
+    return rooms
+
+
+def convert_dict(db_item):
+
+    item_data = {}
+
+    for key in db_item[0].__dict__.keys():
+        item_data[key] = []
+    
+    for item in db_item:
+        for key, value in zip([item_data[k] for k in item_data.keys()], item.__dict__.values()):
+            key.append(value)
+
+    return item_data
+

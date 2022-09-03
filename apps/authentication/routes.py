@@ -204,9 +204,9 @@ def simulate_database_account():
 
         return "db_clear"
 
-@blueprint.route('/simulate_database/room', methods=['GET', 'POST'])
+@blueprint.route('/simulate_database/room/<int:month>', methods=['GET', 'POST'])
 @login_required
-def simulate_database_room():
+def simulate_database_room(month):
 
     if str(session['user_id']) == '1':
 
@@ -216,13 +216,22 @@ def simulate_database_room():
         for ad in accomodations:
             ad_list.append(ad.accomodationId)
 
-        room = Rooms.query.filter_by(Rooms.roomId).first()
+        if month in [1, 3, 5, 7, 8, 10, 12]:
+            lastday = 31
+        elif month in [4, 6, 9, 11]:
+            lastday = 30
+        elif month == 2:
+            lastday = 28
+        else:
+            return ValueError("1~12월까지 입력하세요.")
 
-        if room is not None:
-            return "db clear"
+        rooms = Rooms.query.filter_by(roomDateTime=datetime(2022, month, 1)).first()
+
+        if rooms is not None:
+            return "db already clear" 
 
         for idx, ad in enumerate(ad_list):
-            for dt in [i for i in range(1, 31)]:
+            for dt in [i for i in range(1, lastday)]:
                 for number, sp, up, name, image in zip([110, 120, 205, 300], [2, 4, 5, 6], [3, 4, 7, 8], ["Deluxe", "Double Deluxe", "Special", "Royal"], ['room1.jpg', 'room2.jpg', \
                     'room3.jpg', 'room4.jpg']):
                         
@@ -239,8 +248,8 @@ def simulate_database_room():
                         rsp = 90000 + idx * 1000
                         rop = 110000 + idx * 1000
                     
-                    room = Rooms(roomDateTime=date(2022, 8, dt), roomNumber=number, roomName=name, \
-                        roomCheckIn=datetime(2022, 8, dt, 14), roomCheckOut=datetime(2022, 8, dt+1, 11), \
+                    room = Rooms(roomDateTime=date(2022, month, dt), roomNumber=number, roomName=name, \
+                        roomCheckIn=datetime(2022, month, dt, 14), roomCheckOut=datetime(2022, month, dt+1, 11), \
                         roomStandardPopulation=sp, roomUptoPopulation=up, roomImage='/static/image/'+image, roomSalePrice=rsp, \
                             roomOriginalPrice=rop, roomRate=round(random.random()*5, 1), accomodationId=ad)
 

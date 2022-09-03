@@ -1,4 +1,4 @@
-{% macro data_accomodation(accomodationName, accomodationImage, accomodationPrice, zip, enumerate)%}
+{% macro data_accomodation(accomodationId, accomodationName, accomodationImage, accomodationPrice, zip, enumerate)%}
 
 <section class="accomodation_area section_gap">
     <div class="container">
@@ -7,14 +7,14 @@
             <p>We all live in an age that belongs to the young at heart. Life that is becoming extremely fast,</p>
         </div>
         <div class="row accomodation_two">
-            {% for idx, (name, image, price) in enumerate(zip(accomodationName, accomodationImage, accomodationPrice)) %}
+            {% for idx, (id, name, image, price) in enumerate(zip(accomodationId, accomodationName, accomodationImage, accomodationPrice)) %}
             <div class="col-lg-3 col-sm-6">
                 <div class="accomodation_item text-center">
                     <div class="hotel_img">
                         <img src="{{ image }}" alt="{{ config.ASSETS_ROOT }}/image/room{{ idx }}.jpg">
-                        <a href="{{url_for('home_blueprint.view_room')}}" class="btn theme_btn button_hover">Book Now</a>
+                        <a href="{{url_for('home_blueprint.view_room', accomodationId=id)}}" class="btn theme_btn button_hover">Book Now</a>
                     </div>
-                    <a href="{{url_for('home_blueprint.view_room')}}"><h6 class="sec_h4">{{ name }}</h6></a>
+                    <a href="{{url_for('home_blueprint.view_room', accomodationId=id)}}"><h6 class="sec_h4">{{ name }}</h6></a>
                     <h6>{{price}}<small>hotel</small></h6>
                 </div>
             </div>
@@ -33,7 +33,7 @@
         <div class="page-cover text-center">
             <h2 class="page-cover-tittle">{{name}}</h2>
             <ol class="breadcrumb">
-                <li><a href="index.html">Home</a></li>
+                <li><a href="{{url_for('home_blueprint.index')}}">Home</a></li>
                 <li class="active">{{name}}</li>
             </ol>
         </div>

@@ -1,7 +1,7 @@
 from apps import db
 from apps.home import blueprint
-from apps.authentication.fetchs import fetch_accomodations, fetch_testimonials, fetch_magazines
-from apps.authentication.models import Magazines
+from apps.authentication.fetchs import fetch_accomodations, fetch_testimonials, fetch_magazines, fetch_rooms_detail
+from apps.authentication.models import Accomodations, Magazines
 from apps.authentication.forms import MagazineForm
 
 from flask import render_template, request, session, redirect, url_for
@@ -172,8 +172,16 @@ def view_accomodation():
 
 @blueprint.route('/room', methods=['GET', 'POST'])
 def view_room():
-    page = request.args.get('page', default = 1, type = int)
-    return render_template('home/room.html')    
+
+    accomodation_id = request.args.get('accomodationId')
+
+    rooms = fetch_rooms_detail(accomodation_id)
+    
+    accomodation_name = Accomodations.query.filter_by(accomodationId=accomodation_id).first().accomodationName
+
+    print(rooms)
+    
+    return render_template('home/room.html', templateName='room', rooms=rooms, accomodationName=accomodation_name, zip=zip, enumerate=enumerate)    
 
 #---------------------------------------------------------------- Accomodation End --------------------------------------------------------------------------#
 
