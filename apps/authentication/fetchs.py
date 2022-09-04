@@ -1,6 +1,8 @@
-from apps.authentication.models import Accomodations, Reservations, Testimonials, Users, Magazines, Rooms
+from apps.authentication.models import Accomodations, Reservations, Testimonials, Users, Magazines, Rooms, RoomDateTimes
 from datetime import datetime, date
 from sqlalchemy import and_
+from calendar import monthrange
+
 """
 databases에서 데이터를 가져오는 func
 """
@@ -59,6 +61,22 @@ def fetch_rooms(accomodation_id):
 
 def fetch_room_details(room_id, select_time=date.today()):
     room = Rooms.query.filter_by(roomId=room_id).first()
+
+    room_datetimes = RoomDateTimes.query.join(RoomDateTimes.Reservations).filter(and_(select_time<=RoomDateTimes.roomDateTime, RoomDateTimes.roomId==room_id)).limit(60).all()
+
+    print(room_datetimes)
+    reservation_able = []
+
+    for room_datetime in room_datetimes:
+        reservation = Reservations.query.filter_by(roomSeq=room_datetime.roomSeq)
+
+        if reservation is not None:
+            continue
+        reservation_able.append(reservation)
+    
+    # reservation_data = convert_dict(reservation_able)
+
+    # return reservation_able
 
     # reservation = Reservations.query.filter_by(roomId=room_id).all()
     return room

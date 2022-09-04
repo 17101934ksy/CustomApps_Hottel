@@ -40,3 +40,12 @@ class MagazineForm(FlaskForm):
     visibleFile = FileField('파일',
                             id='visible-file',
                             validators=[FileAllowed(['jpg', 'png'], 'jpg, png 확장자만 가능합니다.')])
+
+
+class ReservationForm(FlaskForm):
+    dateStart = DateTimeField('출발일',
+                                id='period_1',
+                                validators=[DataRequired("출발일을 선택하세요!")])
+    dateEnd = DateTimeField('출발일',
+                                id='period_2',
+                                validators=[DataRequired("도착일을 선택하세요!")])

@@ -79,4 +79,11 @@ function fn_selectDate(date){
 	
 }
 
+function fn_reset(){
+	$("#period_1").val("");
+	$("#period_2").val("");
+	$(".date").css("background-color", "");
+	$(".date").css("color", "");
+}
+
 buildcalendar();

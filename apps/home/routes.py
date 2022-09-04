@@ -2,7 +2,7 @@ from apps import db
 from apps.home import blueprint
 from apps.authentication.fetchs import fetch_accomodations, fetch_testimonials, fetch_magazines, fetch_rooms, fetch_room_details
 from apps.authentication.models import Accomodations, Magazines
-from apps.authentication.forms import MagazineForm
+from apps.authentication.forms import MagazineForm, ReservationForm
 
 from flask import render_template, request, session, redirect, url_for
 from flask_login import login_required
@@ -12,6 +12,8 @@ from werkzeug.utils import secure_filename
 
 
 import datetime, math, os, shutil
+
+from datetime import date
 
 @blueprint.route('/<template>')
 def route_template(template):
@@ -173,23 +175,26 @@ def view_accomodation():
 def view_room():
 
     accomodation_id = request.args.get('accomodationId')
-
     rooms = fetch_rooms(accomodation_id)
-    
     accomodation_name = Accomodations.query.filter_by(accomodationId=accomodation_id).first().accomodationName
-
     
     return render_template('home/room.html', templateName='객실', rooms=rooms, accomodationName=accomodation_name, zip=zip, enumerate=enumerate)    
 
 @blueprint.route('/room-detail', methods=['GET', 'POST'])
 def view_room_detail():
 
+    reservation_form = ReservationForm(request.form)
+
+    if 'reservation' in request.form:
+        print(session['user_id'])
+        return "hello"
+
     room_id = request.args.get('roomId')
-
     room = fetch_room_details(room_id)
-
+    
     print(room)
-    return render_template('home/room-detail.html', template='객실 상세 정보', room=room, zip=zip, enumerate=enumerate)
+    return render_template('home/room-detail.html', template='객실 상세 정보', room=room, zip=zip, enumerate=enumerate, form=reservation_form, today=date.today())
+
 
 #---------------------------------------------------------------- Accomodation End --------------------------------------------------------------------------#
 
@@ -199,6 +204,12 @@ def view_room_detail():
 
 @blueprint.route('/reservation/selectroom/<user_id>')
 def view_select_room(user_id):
+    
+    form = ReservationForm(request.form)
+    
+    if 'reservation' in request.form:
+        return "hello"
+
     return redirect('url_for(home_blueprint.accomodation)')
 
 @blueprint.route('/reservation/selectaccount/<user_id>')
