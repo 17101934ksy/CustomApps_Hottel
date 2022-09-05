@@ -1,7 +1,7 @@
 from apps import db
 from apps.home import blueprint
 from apps.authentication.fetchs import fetch_accomodations, fetch_testimonials, fetch_magazines, fetch_rooms, fetch_room_details
-from apps.authentication.models import Accomodations, Magazines
+from apps.authentication.models import Accomodations, Magazines, Reservations
 from apps.authentication.forms import MagazineForm, ReservationForm
 
 from flask import render_template, request, session, redirect, url_for
@@ -10,10 +10,10 @@ from flask_login import login_required
 from jinja2 import TemplateNotFound, TemplateAssertionError
 from werkzeug.utils import secure_filename
 
+from sqlalchemy import or_, and_
 
 import datetime, math, os, shutil
-
-from datetime import date
+from datetime import date, datetime
 
 @blueprint.route('/<template>')
 def route_template(template):
@@ -90,7 +90,7 @@ def view_magazine(page_number):
         
     
     return render_template('home/magazine.html', templateName='magazine', magazine=magazine, pageNumber=page_number, userId=session['user_id'],\
-        contentsSubject=contents_subject, contentsThema=contents_thema, nowDate=datetime.datetime.now(), zip=zip, enumerate=enumerate, len=len, ceil=math.ceil, int=int)
+        contentsSubject=contents_subject, contentsThema=contents_thema, nowDate=datetime.now(), zip=zip, enumerate=enumerate, len=len, ceil=math.ceil, int=int)
     
 
 @blueprint.route('/magazine-detail/<magazine_id>')
@@ -98,7 +98,7 @@ def view_magazine_detail(magazine_id, magazine_writer, magazine_date, magazine_v
     magazine_image, magazine_tag, magazine_thema):
 
     return render_template('home/magazine-detail.html', templateName='매거진 상세 정보', \
-        nowDate=datetime.datetime.now(), zip=zip, enumerate=enumerate, len=len, ceil=math.ceil, int=int)
+        nowDate=datetime.now(), zip=zip, enumerate=enumerate, len=len, ceil=math.ceil, int=int)
 
 
 @blueprint.route('/magazine-write/Write<user_id>', methods=['GET', 'POST'])
@@ -146,7 +146,7 @@ def view_magazine_write(user_id):
             print(magazine_content)
 
             magazine = Magazines(userId=user_id, magazineThema=magazine_thema, magazineWriter='Writer_'+f'{user_id}',
-            magazineDate=datetime.datetime.now(), magazineView=0, magazineTitle=magazine_title, magazineSubTitle='', magazineContent=magazine_content,
+            magazineDate=datetime.now(), magazineView=0, magazineTitle=magazine_title, magazineSubTitle='', magazineContent=magazine_content,
             magazineLink=str(magazine_seq), magazineTag=magazine_tag, magazineImage=new_path)
 
             db.session.add(magazine)
@@ -157,7 +157,7 @@ def view_magazine_write(user_id):
             return redirect(url_for('home_blueprint.view_magazine', page_number=1))
 
     return render_template('home/magazine-write.html', templateName='매거진 글쓰기', \
-        userId=user_id, magazineSeq=magazine_seq, nowDate=datetime.datetime.now(), zip=zip, enumerate=enumerate, \
+        userId=user_id, magazineSeq=magazine_seq, nowDate=datetime.now(), zip=zip, enumerate=enumerate, \
             form = magazine_form)
 
 
@@ -184,23 +184,33 @@ def view_room():
 def view_room_detail():
 
     reservation_form = ReservationForm(request.form)
+    
+    room_id = request.args.get('roomId')
+    room = fetch_room_details(room_id)
 
     if 'reservation' in request.form:
         print(session['user_id'])
         
         py1, pm1, pd1 = map(int, request.form["period1"].split('-'))
         py2, pm2, pd2 = map(int, request.form["period2"].split('-'))
-
         period1, period2 = date(py1, pm1, pd1), date(py2, pm2, pd2)
 
-        
+        reservation = Reservations.query.filter(and_(Reservations.roomId==room_id, \
+            or_(and_(period1 <= Reservations.roomCheckInDate, Reservations.roomCheckInDate < period2), \
+                and_(Reservations.roomCheckInDate <= period1, period1 < Reservations.roomCheckOutDate)))).all()
 
+        if len(reservation) != 0:
+            print("이미 객실이 존재합니다.")
+            return render_template('home/room-detail.html', template='객실 상세 정보', room=room, zip=zip, enumerate=enumerate, form=reservation_form, today=date.today(), msg="예약 불가합니다.")
 
-        return "hello"
+        reservation = Reservations(userId=session['user_id'], roomId=room_id, roomCheckInDate=period1, roomCheckOutDate=period2, paymentMethodSeq=1, \
+            paymentSaleId=None, paymentDateTime=datetime.now(), paymentName='', paymentPoint=0, paymentAccount=None, paymentRefundAccount='')
 
-    room_id = request.args.get('roomId')
+        db.session.add(reservation)
+        db.session.commit()
+        print('예약 완료')
 
-    room = fetch_room_details(room_id)
+        return 'session clear'
 
     return render_template('home/room-detail.html', template='객실 상세 정보', room=room, zip=zip, enumerate=enumerate, form=reservation_form, today=date.today())
 

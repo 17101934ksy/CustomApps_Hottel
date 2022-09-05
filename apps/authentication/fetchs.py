@@ -1,7 +1,5 @@
 from apps.authentication.models import Accomodations, Reservations, Testimonials, Users, Magazines, Rooms
 from datetime import datetime, date
-from sqlalchemy import and_
-from calendar import monthrange
 
 """
 databases에서 데이터를 가져오는 func
@@ -80,10 +78,6 @@ def fetch_room_details(room_id):
 
     # reservation = Reservations.query.filter_by(roomId=room_id).all()
     return room
-
-
-
-
 
 
 def convert_dict(db_item):
