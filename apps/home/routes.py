@@ -187,6 +187,11 @@ def view_room_detail():
 
     if 'reservation' in request.form:
         print(session['user_id'])
+        py1, pm1, pd1 = map(int, request.form["period1"].split('-'))
+        py2, pm2, pd2 = map(int, request.form["period2"].split('-'))
+
+        period1, period2 = date(py1, pm1, pd1), date(py2, pm2, pd2)
+
         return "hello"
 
     room_id = request.args.get('roomId')

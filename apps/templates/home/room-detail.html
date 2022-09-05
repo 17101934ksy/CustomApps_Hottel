@@ -56,13 +56,13 @@
                     <div class="dates"></div>
                 </div>
                 <div class="col-lg-3 col-sm-6">
-                    <div form role="form">
+                    <form role="form" id="reservation_form" name="reservation" onsubmit="formChk()" method="post" class="post-form">
                         <div class="form-group">
-                            {{ form.dateStart(placeholder="", class="form-control") }} ~ {{ form.dateEnd(placeholder="", class="form-control") }}
+                            {{ form.period1(placeholder="", class="form-control") }} ~ {{ form.period2(placeholder="", class="form-control") }}
                             <button class="btn btn-outline-warning waves-effect" onclick="fn_reset()">리셋</button>
                             <button type="submit" name="reservation" class="btn btn-outline-warning waves-effect" id="reservation_button"> 예약 </button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -96,6 +96,20 @@
     <script src="{{ config.ASSETS_ROOT }}/js/custom.js"></script>
     <script src="{{ config.ASSETS_ROOT }}/js/calendar.js"></script>
 
+    <script>
+        function formChk(){
+            const date1 = new Date($("#period_1").val());
+            const date2 = new Date($("#period_2").val());
+
+            if(date1 < date2){
+                alert("성공");
+                document.reservation_form.submit();
+                return true;
+            }else{
+                fn_reset();
+            }
+        }
+    </script>
 {% endblock javascripts %}
 
 <!-- Specific Page JS goes HERE  -->
