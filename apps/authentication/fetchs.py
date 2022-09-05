@@ -1,4 +1,4 @@
-from apps.authentication.models import Accomodations, Reservations, Testimonials, Users, Magazines, Rooms, RoomDateTimes
+from apps.authentication.models import Accomodations, Reservations, Testimonials, Users, Magazines, Rooms
 from datetime import datetime, date
 from sqlalchemy import and_
 from calendar import monthrange
@@ -59,20 +59,20 @@ def fetch_rooms(accomodation_id):
     return rooms
 
 
-def fetch_room_details(room_id, select_time=date.today()):
+def fetch_room_details(room_id):
     room = Rooms.query.filter_by(roomId=room_id).first()
 
-    room_datetimes = RoomDateTimes.query.join(RoomDateTimes.Reservations).filter(and_(select_time<=RoomDateTimes.roomDateTime, RoomDateTimes.roomId==room_id)).limit(60).all()
+    # room_datetimes = RoomDateTimes.query.join(RoomDateTimes.Reservations).filter(and_(select_time<=RoomDateTimes.roomDateTime, RoomDateTimes.roomId==room_id)).limit(60).all()
 
-    print(room_datetimes)
-    reservation_able = []
+    # print(room_datetimes)
+    # reservation_able = []
 
-    for room_datetime in room_datetimes:
-        reservation = Reservations.query.filter_by(roomSeq=room_datetime.roomSeq)
+    # for room_datetime in room_datetimes:
+    #     reservation = Reservations.query.filter_by(roomSeq=room_datetime.roomSeq)
 
-        if reservation is not None:
-            continue
-        reservation_able.append(reservation)
+    #     if reservation is not None:
+    #         continue
+    #     reservation_able.append(reservation)
     
     # reservation_data = convert_dict(reservation_able)
 
@@ -80,6 +80,9 @@ def fetch_room_details(room_id, select_time=date.today()):
 
     # reservation = Reservations.query.filter_by(roomId=room_id).all()
     return room
+
+
+
 
 
 

@@ -187,17 +187,21 @@ def view_room_detail():
 
     if 'reservation' in request.form:
         print(session['user_id'])
+        
         py1, pm1, pd1 = map(int, request.form["period1"].split('-'))
         py2, pm2, pd2 = map(int, request.form["period2"].split('-'))
 
         period1, period2 = date(py1, pm1, pd1), date(py2, pm2, pd2)
 
+        
+
+
         return "hello"
 
     room_id = request.args.get('roomId')
+
     room = fetch_room_details(room_id)
-    
-    print(room)
+
     return render_template('home/room-detail.html', template='객실 상세 정보', room=room, zip=zip, enumerate=enumerate, form=reservation_form, today=date.today())
 
 

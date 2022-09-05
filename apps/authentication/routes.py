@@ -4,7 +4,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from apps import db, login_manager
 from apps.authentication import blueprint
 from apps.authentication.forms import SiteLoginForm, CreateAccountForm
-from apps.authentication.models import Magazines, RoomDateTimes, Testimonials, Users, BusinessRegisters, BusinessLists, Accomodations, PaymentMethods, Rooms
+from apps.authentication.models import Magazines, Testimonials, Users, BusinessRegisters, BusinessLists, Accomodations, PaymentMethods, Rooms
 from apps.authentication.util import verify_pass, crawler_db
 
 import random
@@ -237,7 +237,7 @@ def simulate_database_room():
                 room = Rooms(roomNumber=number, roomName=name, roomCheckIn="14:00", roomCheckOut="11:00", \
                     roomStandardPopulation=sp, roomUptoPopulation=up, roomImage='/static/image/'+image, roomWifi=True, \
                         roomAirConditioner=True, roomMicrowave=True, roomTv=True, roomRate=round(random.random()*5, 1), \
-                            roomSalePrice=rsp, roomOriginalPrice=rop,accomodationId=ad.accomodationId)
+                            roomSalePrice=rsp, roomOriginalPrice=rop, roomHolidayPrice=rop+10000, accomodationId=ad.accomodationId)
 
                 print(room) 
                 db.session.add(room)
