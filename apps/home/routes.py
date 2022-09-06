@@ -197,9 +197,9 @@ def view_room_detail():
 
         reservation = Reservations.query.filter(and_(Reservations.roomId==room_id, \
             or_(and_(period1 <= Reservations.roomCheckInDate, Reservations.roomCheckInDate < period2), \
-                and_(Reservations.roomCheckInDate <= period1, period1 < Reservations.roomCheckOutDate)))).all()
-
-        if len(reservation) != 0:
+                and_(Reservations.roomCheckInDate <= period1, period1 < Reservations.roomCheckOutDate)))).first()
+                
+        if reservation is not None:
             print("이미 객실이 존재합니다.")
             return render_template('home/room-detail.html', template='객실 상세 정보', room=room, zip=zip, enumerate=enumerate, form=reservation_form, today=date.today(), msg="예약 불가합니다.")
 
