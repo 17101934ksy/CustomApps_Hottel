@@ -67,9 +67,17 @@ var buildcalendar = function(){
 					checkVariable = false;
 				} 
 			}
-			
+
 			if (checkVariable){
-				htmlDates += '<div id="date_'+dates[i]+'" class="date" onclick="fn_selectDate('+dates[i]+');">'+dates[i]+'</div>';  
+				if(today.getDate()==dates[i] && today.getMonth()==CDate.getMonth() && today.getFullYear()==CDate.getFullYear()){
+					if (reservationSameDay == 'true'){
+						htmlDates += '<div id="date_'+dates[i]+'" class="date" onclick="fn_selectDate('+dates[i]+');">'+dates[i]+'</div>';  
+					} else{
+						htmlDates += '<div class="date last">'+dates[i]+'</div>';  
+					}
+				} else{
+					htmlDates += '<div id="date_'+dates[i]+'" class="date" onclick="fn_selectDate('+dates[i]+');">'+dates[i]+'</div>';  
+				}
 			}else{
 				htmlDates += '<div class="date last">'+dates[i]+'</div>';
 			}
