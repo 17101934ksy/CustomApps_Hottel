@@ -1,6 +1,6 @@
 from apps import db
 from apps.home import blueprint
-from apps.authentication.fetchs import fetch_accomodations, fetch_testimonials, fetch_magazines, fetch_rooms, fetch_room_details
+from apps.home.fetchs import fetch_accomodations, fetch_testimonials, fetch_magazines, fetch_rooms, fetch_room_details
 from apps.authentication.models import Accomodations, Magazines, Reservations
 from apps.authentication.forms import MagazineForm, ReservationForm
 
