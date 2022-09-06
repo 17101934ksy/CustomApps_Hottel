@@ -8,29 +8,16 @@ var reservationSameDay = document.getElementById("reservation-same-day").innerTe
 var hiddenCheckIn = document.getElementsByClassName("hidden-checkIn");
 var hiddenCheckOut = document.getElementsByClassName("hidden-checkOut");
 
-var buildcalendar = function(){
 
+// style="pointer-events: none"
+
+var buildcalendar = function(){
 	var htmlDates = ''; 
 	var prevLast = new Date(CDate.getFullYear(), CDate.getMonth(), 0); //지난 달의 마지막 날 
 	var thisFirst = new Date(CDate.getFullYear(), CDate.getMonth(), 1); //이번 달의 첫쨰 날
 	var thisLast = new Date(CDate.getFullYear(), CDate.getMonth() + 1, 0); //이번 달의 마지막 날
 	document.querySelector(".year").innerHTML = CDate.getFullYear() + "년";  // year에 년도 출력
 	document.querySelector(".month").innerHTML = (CDate.getMonth() + 1) + "월";  //month에 월 출력
-
-	const hiddenCheckInList = [];
-	const hiddenCheckOutList = [];
-
-	for(var k = 0; k < hiddenCheckIn.length; k++){
-		hiddenCheckInList.push(new Date(hiddenCheckIn[k].innerText));
-		hiddenCheckOutList.push(new Date(hiddenCheckOut[k].innerText));
-	}
-
-	for(var k = 0; k < hiddenCheckInList.length; k++){
-		console.log(hiddenCheckInList[k]);
-		console.log(hiddenCheckOutList[k]);
-	
-	}
-
 	const dates = []; 
 	if(thisFirst.getDay()!=0){ 
 		for(var i = 0; i < thisFirst.getDay(); i++){
@@ -51,28 +38,21 @@ var buildcalendar = function(){
 			htmlDates += '<div class="date last">'+dates[i]+'</div>'; 
 			console.log(i);
 			console.log('a');
-		}else if(i >= thisFirst.getDay() + thisLast.getDate()){
+		}else if(today.getDate()==dates[i] && today.getMonth()==CDate.getMonth() && today.getFullYear()==CDate.getFullYear()){
+			htmlDates += '<div id="date_'+dates[i]+'" class="date today" onclick="fn_selectDate('+dates[i]+');">'+dates[i]+'</div>'; 
 
+
+		
+			}else if(i >= thisFirst.getDay() + thisLast.getDate()){
 			 htmlDates += '<div class="date next">'+dates[i]+'</div>';
 			 
 			 console.log(i);
 			 console.log('c');
 		}else{
-
-			var dateTest = new Date(CDate.getFullYear(), CDate.getMonth(), dates[i])
-			var checkVariable = true
-
-			for(var k = 0; k < hiddenCheckInList.length; k++){
-				if ((hiddenCheckInList[k] <= dateTest) && (dateTest < hiddenCheckOutList[k])){
-					checkVariable = false;
-				} 
-			}
+			htmlDates += '<div id="date_'+dates[i]+'" class="date" onclick="fn_selectDate('+dates[i]+');">'+dates[i]+'</div>'; 
 			
-			if (checkVariable){
-				htmlDates += '<div id="date_'+dates[i]+'" class="date" onclick="fn_selectDate('+dates[i]+');">'+dates[i]+'</div>';  
-			}else{
-				htmlDates += '<div class="date last">'+dates[i]+'</div>';
-			}
+			console.log(i);
+			console.log('d');
 		}
 	 } 
 document.querySelector(".dates").innerHTML = htmlDates; 

@@ -91,12 +91,12 @@ $ cd hottel
    |    |
    |    |-- home/                           # home
    |    |    |-- routes.py                  # routes for app(render templates, fetch data etc...)
+   |    |    |-- fetchs.py                  # fetch from database
    |    |
    |    |-- authentication/                 # authenticate for login
    |    |    |-- routes.py                  # routes for authentication 
    |    |    |-- models.py                  # database
    |    |    |-- forms.py                   # form
-   |    |    |-- fetchs.py                  # fetch from database
    |    |    |-- util.py                    # function for utils 
    |    |
    |    |-- info/

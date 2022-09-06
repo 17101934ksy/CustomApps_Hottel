@@ -186,7 +186,18 @@ def view_room_detail():
     reservation_form = ReservationForm(request.form)
     
     room_id = request.args.get('roomId')
-    room = fetch_room_details(room_id)
+    room, already_reservations = fetch_room_details(room_id)
+
+    print(already_reservations)
+
+    today = date.today()
+    now_time = datetime.now()
+    room_check_in_hour, room_check_in_minute = map(int, room.roomCheckIn.split(':'))
+
+    # 체크인 시간보다 두시간은 여유가 있어야 당일 예약이 가능
+    reservation_same_day = False
+    if now_time < datetime(today.year, today.month, today.day, room_check_in_hour-2, room_check_in_minute):
+        reservation_same_day = True
 
     if 'reservation' in request.form:
         print(session['user_id'])
@@ -201,7 +212,9 @@ def view_room_detail():
                 
         if reservation is not None:
             print("이미 객실이 존재합니다.")
-            return render_template('home/room-detail.html', template='객실 상세 정보', room=room, zip=zip, enumerate=enumerate, form=reservation_form, today=date.today(), msg="예약 불가합니다.")
+            return render_template('home/room-detail.html', template='객실 상세 정보', room=room, zip=zip, enumerate=enumerate, form=reservation_form, today=date.today(), \
+        alreadyReservations=already_reservations, reservationSameDay=reservation_same_day)
+
 
         reservation = Reservations(userId=session['user_id'], roomId=room_id, roomCheckInDate=period1, roomCheckOutDate=period2, paymentMethodSeq=1, \
             paymentSaleId=None, paymentDateTime=datetime.now(), paymentName='', paymentPoint=0, paymentAccount=None, paymentRefundAccount='')
@@ -211,8 +224,14 @@ def view_room_detail():
         print('예약 완료')
 
         return 'session clear'
+    
+    print(reservation_same_day)
+    print(today)
+    print(room)
+    print(already_reservations)
 
-    return render_template('home/room-detail.html', template='객실 상세 정보', room=room, zip=zip, enumerate=enumerate, form=reservation_form, today=date.today())
+    return render_template('home/room-detail.html', template='객실 상세 정보', room=room, zip=zip, enumerate=enumerate, form=reservation_form, today=today, \
+        alreadyReservations=already_reservations, reservationSameDay=reservation_same_day)
 
 
 #---------------------------------------------------------------- Accomodation End --------------------------------------------------------------------------#

@@ -15,6 +15,13 @@
     <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/css/responsive.css">
     <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/css/calendar.css">
 
+    <style>
+        
+        #flask-raw-data {
+            display: none;
+        }
+
+    </style>
 {% endblock stylesheets %}
 
 {% block content %}
@@ -42,7 +49,21 @@
                         <p>할인가: {{room['roomSalePrice']}}원<small>&nbsp&nbsp원가: {{room['roomOriginalPrice']}}원</small></p>
                     </div>
                 </div>
-                <div class="calendar">
+                <div id="flask-raw-data">
+                    <div id="today">
+                        {{today}}
+                    </div>
+                    <div id="reservation-same-day">
+                        {{reservationSameDay}}
+                    </div>
+                    <div id="already-reservations">
+                        {% for idx, (checkin, checkout) in enumerate(zip(alreadyReservations["roomCheckInDate"], alreadyReservations["roomCheckOutDate"]))%}
+                        <div class='hidden-checkIn'> {{checkin}} </div>
+                        <div class="hidden-checkOut"> {{checkout}} </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="calendar" >
                     <div class="header">
                         <button class="calendar_btn" onclick="prevCal();">&lt;</button>
                         <div class="title"><span class="year"></span><span class="month"></span></div>
@@ -109,6 +130,8 @@
                 fn_reset();
             }
         }
+        
+
     </script>
 {% endblock javascripts %}
 
