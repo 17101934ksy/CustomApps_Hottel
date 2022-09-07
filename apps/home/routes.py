@@ -1,8 +1,10 @@
 from apps import db
 from apps.home import blueprint
 from apps.home.fetchs import fetch_accomodations, fetch_testimonials, fetch_magazines, fetch_rooms, fetch_room_details
-from apps.authentication.models import Accomodations, Magazines, Reservations
-from apps.authentication.forms import MagazineForm, ReservationForm
+from apps.authentication.models import Accomodations, Magazines, PaymentMethods, Reservations, Rooms, UserCoupons, Points
+from apps.authentication.forms import MagazineForm, ReservationForm, PaymentForm
+
+from wtforms.validators import DataRequired, NumberRange
 
 from flask import render_template, request, session, redirect, url_for
 from flask_login import login_required
@@ -13,7 +15,7 @@ from werkzeug.utils import secure_filename
 from sqlalchemy import or_, and_
 
 import datetime, math, os, shutil
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 @blueprint.route('/<template>')
 def route_template(template):
@@ -141,9 +143,6 @@ def view_magazine_write(user_id):
                 magazine_image.save(path + "/" + secure_filename(magazine_image.filename))
 
             new_path = '/static/image/magazines/' + new_path
-            print("**** request ****")
-
-            print(magazine_content)
 
             magazine = Magazines(userId=user_id, magazineThema=magazine_thema, magazineWriter='Writer_'+f'{user_id}',
             magazineDate=datetime.now(), magazineView=0, magazineTitle=magazine_title, magazineSubTitle='', magazineContent=magazine_content,
@@ -152,7 +151,6 @@ def view_magazine_write(user_id):
             db.session.add(magazine)
             db.session.commit()
 
-            print("**** end ****")
             
             return redirect(url_for('home_blueprint.view_magazine', page_number=1))
 
@@ -217,21 +215,75 @@ def view_room_detail():
 
 
         reservation = Reservations(userId=session['user_id'], roomId=room_id, roomCheckInDate=period1, roomCheckOutDate=period2, paymentMethodSeq=1, \
-            paymentSaleId=None, paymentDateTime=datetime.now(), paymentName='', paymentPoint=0, paymentAccount=None, paymentRefundAccount='')
+            couponSeq=None, paymentDateTime=datetime.now(), paymentName='', paymentPoint=0, paymentAccount=None, paymentRefundAccount='')
 
         db.session.add(reservation)
         db.session.commit()
-        print('예약 완료')
 
-        return 'session clear'
+        print('예약 체인 완료')
+
+        return redirect(url_for('home_blueprint.view_room_reservation_payment', reserve_seq=reservation.reserveSeq))
     
-    print(reservation_same_day)
-    print(today)
-    print(room)
-    print(already_reservations)
-
     return render_template('home/room-detail.html', template='객실 상세 정보', room=room, zip=zip, enumerate=enumerate, form=reservation_form, today=today, \
         alreadyReservations=already_reservations, reservationSameDay=reservation_same_day)
+
+
+@blueprint.route('/room-reservation-payment/<reserve_seq>', methods=['GET', 'POST'])
+@login_required
+def view_room_reservation_payment(reserve_seq):
+
+    try:
+        if session['user_id'] is None:
+            return redirect(url_for('authentication_blueprint.login'))
+
+    except:
+        print("허가 받지 않는 사용자입니다.")
+        return redirect(url_for('authentication_blueprint.login'))
+
+    # query
+    reservation = Reservations.query.filter_by(reserveSeq=reserve_seq).first()
+    room = Rooms.query.filter_by(roomId=reservation.roomId).first()
+    payment_method_dict = PaymentMethods.query.all()    
+    user_coupon = UserCoupons.query.filter_by(userId=session['user_id']).all()
+    point = Points.query.filter_by(userId=session['user_id']).first()
+    
+    # dict-list data -> list-dict 처리
+    payment_method = [pmd.paymentMethod for pmd in payment_method_dict]
+    coupon = "사용 가능한 쿠폰 없습니다." if user_coupon is None else [cou.couponId for cou in user_coupon]
+
+    # room price calculate
+    check_in = reservation.roomCheckInDate
+    check_out = reservation.roomCheckOutDate
+    total_room_price = 0
+
+    # form attribute
+    point = 0 if point is None else point.pointSum
+
+    payment_form = PaymentForm(request.form)
+    payment_form.paymentPoint.validators = [DataRequired("포인트를 입력하세요"), NumberRange(min=0, max=point)]
+    today = date.today()
+
+    while check_in != check_out:
+        if check_in.weekday() not in [4, 5]:
+            total_room_price += room.roomSalePrice if room.roomSalePrice is not None else room.roomOriginalPrice
+        else:
+            total_room_price += room.roomHolidayPrice
+        check_in += timedelta(days=1)
+
+    # request
+    if 'payment' in request.form and payment_form.validate_on_submit():
+
+        payment_name = request.form['paymentName']
+        payment_method = request.form['paymentMethod']
+        payment_sale = request.form['saleCoupon']
+        payment_point = request.form['paymentPoint']
+        payment_account = request.form['paymentAccount']
+        payment_refund_account = request.form['paymentRefundAccount']
+            
+        return "session clear"
+
+    return render_template('home/room-payment.html', template='객실 예약', room=room, zip=zip, enumerate=enumerate, form=payment_form, today=today, \
+        reservation=reservation, totalRoomPrice=total_room_price, point=point, userCoupon=user_coupon, paymentMethod=payment_method)
 
 
 #---------------------------------------------------------------- Accomodation End --------------------------------------------------------------------------#

@@ -171,7 +171,7 @@ class Reservations(db.Model):
     roomCheckInDate = Column(DATE, nullable=False)
     roomCheckOutDate = Column(DATE, nullable=False)
     paymentMethodSeq = Column(Integer, ForeignKey('PaymentMethods.paymentMethodSeq'), nullable=False) 
-    paymentSaleId = Column(Integer, ForeignKey('PaymentSaleMethods.paymentSaleId'),nullable=True)
+    couponSeq = Column(Integer, ForeignKey('UserCoupons.couponSeq'),nullable=True)
 
     paymentDateTime = Column(DateTime, nullable=False)
     paymentName = Column(String(200), nullable=False)
@@ -182,7 +182,7 @@ class Reservations(db.Model):
     users = db.relationship('Users', backref='Reservations')
     rooms = db.relationship('Rooms', backref='Rooms')
     paymentMethods = db.relationship('PaymentMethods', backref='Reservations')
-    paymentSaleMethods = db.relationship('PaymentSaleMethods', backref='Reservations') 
+    userCoupons = db.relationship('UserCoupons', backref='Reservations') 
 
     def __repr__(self):
         self.info = {
@@ -192,7 +192,7 @@ class Reservations(db.Model):
             "roomCheckInDate": self.roomCheckInDate,
             "roomCheckOutDate": self.roomCheckOutDate,
             "paymentMethodSeq": self.paymentMethodSeq,
-            "paymentSaleId": self.paymentSaleId,
+            "couponSeq": self.couponSeq,
             "paymentDateTime": self.paymentDateTime,
             "paymentName": self.paymentName,
             "paymentPoint": self.paymentPoint,
@@ -201,21 +201,31 @@ class Reservations(db.Model):
         }
         return str(self.info)
 
-class PaymentSaleMethods(db.Model):
+class SaleCoupons(db.Model):
 
-    __tablename__ = "PaymentSaleMethods"
+    __tablename__ = "SaleCoupons"
 
-    paymentSaleId = Column(Integer, primary_key=True, autoincrement=True)
-    paymentSaleMethod = Column(String(400), nullable=False)
-    paymentSalePrice = Column(Integer, nullable=True)
-    paymentSaleRate = Column(Float, nullable=True)
+    saleCouponId = Column(Integer, primary_key=True, autoincrement=True)
+    saleCouponName = Column(String(400), nullable=False)
+    saleCouponType = Column(BOOLEAN, nullable=False)
+    saleCouponPrice = Column(Integer, nullable=True)
+    saleCouponRate = Column(Float, nullable=True)
+    accomodationTypeConstraint = Column(String(200), nullable=True)
+    accomodationIdConstraint = Column(Integer, nullable=True)
+    validityTime = Column(DATE, nullable=True)
+    saleCouponInfo = Column(String(400), nullable=False)
 
     def __repr__(self):
         self.info = {
-            "paymentSaleId": self.paymentSaleId,
-            "paymentSaleMethod": self.paymentSaleMethod,
-            "paymentSalePrice": self.paymentSalePrice,
-            "paymentSaleRate": self.paymentSaleRate
+            "saleCouponId": self.saleCouponId,
+            "saleCouponName": self.saleCouponName,
+            "saleCouponType": self.saleCouponType,
+            "saleCouponPrice": self.saleCouponPrice,
+            "saleCouponRate": self.saleCouponRate,
+            "accomodationTypeConstraint": self.accomodationTypeConstraint,
+            "accomodationIdConstraint": self.accomodationIdConstraint,
+            "validityTime": self.validityTime,
+            "saleCouponInfo": self.saleCouponInfo
         }
         return str(self.info)
 
@@ -254,7 +264,7 @@ class RoomReviews(db.Model):
 
     def __repr__(self):
         self.info = {
-            "roomReviewId": self.roomReviewId,
+            "roomReviewSeq": self.roomReviewSeq,
             "completeSeq": self.completeSeq,
             "reviewImage1": self.reviewImage1,
             "reviewImage2": self.reviewImage2,
@@ -373,7 +383,7 @@ class PaymentMethods(db.Model):
             "paymentMethod": self.paymentMethod,
             "paymentDepositAccount": self.paymentDepositAccount
         }
-        return self.info
+        return str(self.info)
 
 class UsedCompletes(db.Model):
 
@@ -382,10 +392,32 @@ class UsedCompletes(db.Model):
     completeSeq = Column(Integer, primary_key=True, autoincrement=True)
     reserveSeq = Column(Integer, ForeignKey('Reservations.reserveSeq')) 
 
+    reservations = db.relationship('Reservations', backref='UsedCompletes')
+
     def __repr__(self):
         self.info = {
             "completeSeq": self.completeSeq,
             "reserveSeq": self.reserveSeq,
+        }
+        return str(self.info)
+
+
+class UserCoupons(db.Model):
+
+    __tablename__ = 'UserCoupons'
+
+    couponSeq = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    couponId = Column(Integer, ForeignKey('SaleCoupons.saleCouponId'), nullable=False)
+    userId = Column(Integer, ForeignKey('Users.userId'), nullable=False)
+
+    saleCoupons = db.relationship('SaleCoupons', backref='UserCoupons')
+    users = db.relationship('Users', backref='UserCoupons')
+    
+    def __repr__(self):
+        self.info = {
+            "couponSeq": self.couponSeq,
+            "couponId": self.couponId,
+            "userId": self.userId
         }
         return str(self.info)
 

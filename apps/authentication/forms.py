@@ -1,6 +1,7 @@
+from typing import overload
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, IntegerField, HiddenField, DateTimeField
-from wtforms.validators import Email, DataRequired, Length, EqualTo
+from wtforms.validators import Email, DataRequired, Length, EqualTo, NumberRange
 from flask_wtf.file import FileField, FileAllowed
 
 class SiteLoginForm(FlaskForm):
@@ -49,3 +50,26 @@ class ReservationForm(FlaskForm):
     period2 = DateTimeField('체크아웃',
                                 id='period_2',
                                 validators=[DataRequired("도착일을 선택하세요!")])
+
+
+class PaymentForm(FlaskForm):
+
+
+    paymentName = StringField('결제자명',
+                                id='payment-name',
+                                validators=[DataRequired("결제자 이름을 입력해주세요.")])
+    paymentMethod = HiddenField('결제방식',
+                                id='payment-method',
+                                validators=[DataRequired("결제방식을 선택해주세요.")])
+    saleCoupon = HiddenField('할인 쿠폰',
+                                id='sale-coupon')
+    
+    paymentPoint = IntegerField('포인트사용',
+                                id='use-point')
+    paymentAccount = StringField('계좌번호',
+                                id='account',
+                                validators=[DataRequired("계좌번호를 입력하세요")])
+    paymentRefundAccount = StringField('환불 계좌번호',
+                                        id='refund-account',
+                                        validators=[DataRequired("환불 계좌를 입력하세요")])
+    

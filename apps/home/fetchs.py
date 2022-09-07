@@ -1,4 +1,4 @@
-from apps.authentication.models import Accomodations, Reservations, Testimonials, Users, Magazines, Rooms
+from apps.authentication.models import Accomodations, Reservations, SaleCoupons, Testimonials, Users, Magazines, Rooms
 from datetime import datetime, date
 from sqlalchemy import and_, or_
 
@@ -70,6 +70,23 @@ def fetch_room_details(room_id):
             reservation['roomCheckOutDate'].append(dt.roomCheckOutDate)
 
     return room, reservation
+
+
+def fetch_user_coupon(user_coupon, room):
+
+    coupons = []
+
+    for cou in user_coupon:
+        coupon = SaleCoupons.query.filter_by(saleCouponId=cou.couponId).first()
+
+        if coupon.accmodationTypeConstraint is None and coupon.accmodationIdConstraint is None:
+            coupons.append(coupon)
+        
+        elif coupon.accmodationTypeConstraint is not None and coupon.accmodationIdConstraint is None:
+            return 1
+
+    
+    return "사용 가능한 쿠폰이 없습니다."
 
 
 def convert_dict(db_item):

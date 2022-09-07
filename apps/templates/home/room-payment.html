@@ -1,0 +1,133 @@
+{% from 'macros/macros.html' import data_breadcrumb, data_room_detail %}
+{% extends "layouts/base.html" %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+
+    <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/css/bootstrap.css">
+    <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/vendors/linericon/style.css">
+    <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/vendors/bootstrap-datepicker/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/vendors/nice-select/css/nice-select.css">
+    <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/vendors/owl-carousel/owl.carousel.min.css">
+    <!-- main css -->
+    <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/css/style.css">
+    <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/css/responsive.css">
+    <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/css/calendar.css">
+
+    <style>
+        
+        #flask-raw-data {
+            display: none;
+        }
+        .form-custom-style {
+            border: 3px solid #ccc;
+        }
+
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    {% include 'includes/header.html' %}
+    <!--================Breadcrumb Area =================-->
+    {{ data_breadcrumb(templateName) }}
+    <!--================Breadcrumb Area =================-->
+    
+    <!--================ Accomodation Area  =================-->
+    <section class="accomodation_area section_gap">
+        <div class="container">
+            <div class="section_title text-center">
+                <h2 class="title_color">{{room['roomName']}}</h2>
+                <p>{{room['roomName']}}의 예약 소개</p>
+            </div>
+            <div class="row mb_30">
+                <div class="col-lg-3 col-sm-6">
+                    <div class="accomodation_item text-center">
+                        <div class="hotel_img">
+                            <img src="{{room['roomImage']}}" alt="">
+                            <a href="#" class="btn theme_btn button_hover">Book Now</a>
+                        </div>
+                        <a href="#"><h4 class="sec_h4">{{room['roomNumber']}} 호</h4></a>
+                        <p>총 예약 금액: {{totalRoomPrice}}<br/><small>체크인: {{reservation["roomCheckInDate"]}}&nbsp;&nbsp;체크아웃: {{reservation["roomCheckOutDate"]}}</small></p>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-sm-6">
+                    <form role="form" method="post" class="post-form" enctype="multipart/form-data">
+                        {{ form.csrf_token }}
+                        <div class="form-group">
+                            {{ form.paymentName(class="form-custom-style", placeholder="결제자명을 입력하세요.") }}
+                        </div>
+                        <div class="form-group">
+                            <label for="bank">결제 은행 선택</label>
+                                <br/>
+                                <select id="bank" name="bank">
+                                    {% for idx, bank in enumerate(paymentMethod) %}
+                                    <option value="{{bank}}">{{bank}}</option>
+                                    {% endfor %}
+                                </select>
+                        </div>
+                        <div class="form-group">
+                            {{ form.paymentPoint(class="form-custom-style", placeholder="사용할 포인트를 입력하세요.") }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.paymentAccount(class="form-custom-style", placeholder="계좌번호를 입력하세요.(-포함)") }}
+                        </div>   
+                        <div class="form-group">
+                            {{ form.paymentRefundAccount(class="form-custom-style", placeholder="환불 계좌를 입력하세요.") }}
+                        </div>   
+                        {{ form.paymentMethod(class="form-copy") }}
+                        {{ form.saleCoupon(class="form-copy") }}                               
+                        <button type="submit" name="payment" class="btn btn-outline-warning waves-effect" id="payment-button" onclick="copy_form()"> 등록하기</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!--================ Accomodation Area  =================-->
+
+
+    <!--================ Testimonial Area  =================-->
+    <!--================ Testimonial Area  =================-->
+    
+    <!--================ Footer Area  =================-->
+    {% include 'includes/footer.html' %}
+    <!--================ Footer Area  =================-->
+
+
+{% endblock content %}
+
+{% block javascripts %}
+
+    <script src="{{ config.ASSETS_ROOT }}/js/jquery-3.2.1.min.js"></script>
+    <script src="{{ config.ASSETS_ROOT }}/js/popper.js"></script>
+    <script src="{{ config.ASSETS_ROOT }}/js/bootstrap.min.js"></script>
+    <script src="{{ config.ASSETS_ROOT }}/vendors/owl-carousel/owl.carousel.min.js"></script>
+    <script src="{{ config.ASSETS_ROOT }}/js/jquery.ajaxchimp.min.js"></script>
+    <script src="{{ config.ASSETS_ROOT }}/vendors/bootstrap-datepicker/bootstrap-datetimepicker.min.js"></script>
+    <script src="{{ config.ASSETS_ROOT }}/vendors/nice-select/js/jquery.nice-select.js"></script>
+    <script src="{{ config.ASSETS_ROOT }}/js/mail-script.js"></script>
+    <script src="{{ config.ASSETS_ROOT }}/js/stellar.js"></script>
+    <script src="{{ config.ASSETS_ROOT }}/vendors/lightbox/simpleLightbox.min.js"></script>
+    <script src="{{ config.ASSETS_ROOT }}/js/custom.js"></script>
+
+    <script>
+        function copy_form(){
+        alert("test content copy")
+
+        var testMethod = $("input[name='themaName']:checked").val();
+
+        var paymentMethod = document.getElementById('payment-method');
+        var saleCoupon = document.getElementById('sale-coupon');
+
+        paymentMethod.setAttribute('value', testMethod);
+        saleCoupon.setAttribute('value', testMethod);
+        }
+        
+    </script>
+    {% endblock javascripts %}
+
+<!-- Specific Page JS goes HERE  -->
+

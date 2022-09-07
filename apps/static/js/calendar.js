@@ -86,11 +86,6 @@ var buildcalendar = function(){
 document.querySelector(".dates").innerHTML = htmlDates; 
 } 
 
-// function dontClickDate(date){
-// 	if (date < reservationSameDay){
-// 		return 0;
-// 	}
-// }
 
 function prevCal(){
 	 CDate.setMonth(CDate.getMonth()-1); 
